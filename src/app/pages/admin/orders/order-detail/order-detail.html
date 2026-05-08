@@ -1,0 +1,100 @@
+<main class="admin-page">
+  <div class="form-header">
+    <a class="back-link" routerLink="/admin/orders">← Siparişlere Dön</a>
+    <h1 class="admin-title" *ngIf="order">Sipariş #{{ order.id }}</h1>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+  <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+  <div *ngIf="order" class="detail-layout">
+
+    <!-- Sol: Sipariş Bilgileri -->
+    <div class="detail-main">
+      <section class="detail-section">
+        <h2 class="section-title">Müşteri Bilgileri</h2>
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="info-label">Ad Soyad</span>
+            <span>{{ order.customerName || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">E-posta</span>
+            <span>{{ order.customerEmail || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Adres</span>
+            <span>{{ order.address }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tarih</span>
+            <span>{{ formatDate(order.createdAt) }}</span>
+          </div>
+          <div class="info-row" *ngIf="order.cargoTrackNumber">
+            <span class="info-label">Kargo Takip No</span>
+            <span>{{ order.cargoTrackNumber }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <h2 class="section-title">Ürünler</h2>
+        <table class="products-table">
+          <thead>
+          <tr>
+            <th>Ürün</th>
+            <th>Adet</th>
+            <th>Birim Fiyat</th>
+            <th>Toplam</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of order.items">
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ formatPrice(item.price) }}</td>
+            <td>{{ formatPrice(item.subtotal) }}</td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="3" class="total-label">Genel Toplam</td>
+            <td class="total-value">{{ formatPrice(order.totalPrice) }}</td>
+          </tr>
+          </tfoot>
+        </table>
+      </section>
+    </div>
+
+    <!-- Sağ: Durum Güncelleme -->
+    <aside class="detail-sidebar">
+      <section class="detail-section">
+        <h2 class="section-title">Durum Güncelle</h2>
+        <form class="status-form" (ngSubmit)="updateStatus()">
+          <div class="form-field">
+            <label>Sipariş Durumu</label>
+            <select [(ngModel)]="statusForm.orderStatus" name="orderStatus">
+              <option *ngFor="let s of orderStatuses" [value]="s.value">{{ s.label }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Ödeme Durumu</label>
+            <select [(ngModel)]="statusForm.paymentStatus" name="paymentStatus">
+              <option *ngFor="let s of paymentStatuses" [value]="s.value">{{ s.label }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Kargo Takip No <span class="optional">(opsiyonel)</span></label>
+            <input type="text" [(ngModel)]="statusForm.cargoTrackNumber" name="cargoTrackNumber" />
+          </div>
+          <div *ngIf="saveError" class="form-error">{{ saveError }}</div>
+          <div *ngIf="saveSuccess" class="form-success">Güncellendi.</div>
+          <button type="submit" class="btn-primary" [disabled]="saving">
+            {{ saving ? 'Kaydediliyor...' : 'Güncelle' }}
+          </button>
+        </form>
+      </section>
+    </aside>
+
+  </div>
+</main>

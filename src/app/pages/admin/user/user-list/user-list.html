@@ -1,0 +1,38 @@
+<main class="admin-page">
+  <div class="admin-header">
+    <h1 class="admin-title">Kullanıcılar</h1>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+  <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="products-table">
+    <thead>
+    <tr>
+      <th>Ad</th>
+      <th>E-posta</th>
+      <th>Rol</th>
+      <th>Kayıt Tarihi</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="users.length === 0">
+      <td colspan="5" class="empty-row">Henüz kullanıcı yok.</td>
+    </tr>
+    <tr *ngFor="let user of users">
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>
+            <span class="role-badge" [class.role-admin]="user.role === 'ADMIN'">
+              {{ user.role }}
+            </span>
+      </td>
+      <td>{{ formatDate(user.createdAt) }}</td>
+      <td class="actions">
+        <button class="btn-delete" (click)="delete(user)">Sil</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</main>

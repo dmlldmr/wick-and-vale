@@ -1,0 +1,39 @@
+<main class="admin-page">
+  <div class="form-header">
+    <a class="back-link" routerLink="/admin/collections">← Koleksiyonlara Dön</a>
+    <h1 class="admin-title">{{ isEditMode ? 'Koleksiyonu Düzenle' : 'Yeni Koleksiyon' }}</h1>
+  </div>
+
+  <form class="product-form" (ngSubmit)="onSubmit()">
+    <div class="form-field" *ngIf="!isEditMode">
+      <label for="type">Tür</label>
+      <select id="type" [(ngModel)]="collectionType" name="collectionType" required>
+        <option *ngFor="let t of collectionTypes" [value]="t.value">{{ t.label }}</option>
+      </select>
+    </div>
+
+    <div class="form-field" *ngIf="isEditMode">
+      <label>Tür</label>
+      <input type="text" [value]="collectionType" disabled />
+    </div>
+
+    <div class="form-field">
+      <label for="description">Açıklama <span class="optional">(opsiyonel)</span></label>
+      <textarea id="description" [(ngModel)]="description" name="description" rows="4"></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="coverImage">Kapak Görseli URL <span class="optional">(opsiyonel)</span></label>
+      <input id="coverImage" type="text" [(ngModel)]="coverImage" name="coverImage" />
+    </div>
+
+    <div *ngIf="error" class="form-error">{{ error }}</div>
+
+    <div class="form-actions">
+      <a class="btn-ghost" routerLink="/admin/collections">İptal</a>
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Kaydediliyor...' : (isEditMode ? 'Güncelle' : 'Oluştur') }}
+      </button>
+    </div>
+  </form>
+</main>

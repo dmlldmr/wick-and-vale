@@ -1,0 +1,33 @@
+<app-navbar />
+
+<main class="home-page">
+  <section class="hero">
+    <p class="hero-eyebrow">El yapımı mumlar</p>
+    <h1 class="hero-title">Işığın<br>Kokusu</h1>
+    <p class="hero-sub">Doğal malzemelerden üretilen, benzersiz tasarımlara sahip mumlarla yaşam alanlarınıza sıcaklık katın.</p>
+  </section>
+
+  <section class="products-section">
+    <div class="section-header">
+      <h2 class="section-title">Ürünler</h2>
+    </div>
+
+    <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+    <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+    <div *ngIf="!loading && !error" class="products-grid">
+      <div *ngIf="products.length === 0" class="state-message">Henüz ürün eklenmemiş.</div>
+      <article class="product-card" *ngFor="let product of products">
+        <div class="product-image">
+          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" />
+          <div *ngIf="!product.imageUrl" class="product-image-placeholder"></div>
+        </div>
+        <div class="product-info">
+          <span class="product-type">{{ getCollectionLabel(product.collectionType) }}</span>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-price">{{ formatPrice(product.price) }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>

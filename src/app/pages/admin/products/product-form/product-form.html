@@ -1,0 +1,65 @@
+<main class="admin-page">
+  <div class="form-header">
+    <a class="back-link" routerLink="/admin/products">← Ürünlere Dön</a>
+    <h1 class="admin-title">{{ isEditMode ? 'Ürünü Düzenle' : 'Yeni Ürün' }}</h1>
+  </div>
+
+  <div *ngIf="loadingOptions" class="state-message">Yükleniyor...</div>
+
+  <form *ngIf="!loadingOptions" class="product-form" (ngSubmit)="onSubmit()">
+    <div class="form-field">
+      <label for="name">Ürün Adı</label>
+      <input id="name" type="text" [(ngModel)]="name" name="name" required />
+    </div>
+
+    <div class="form-field">
+      <label for="description">Açıklama <span class="optional">(opsiyonel)</span></label>
+      <textarea id="description" [(ngModel)]="description" name="description" rows="3"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="price">Fiyat (₺)</label>
+        <input id="price" type="number" [(ngModel)]="price" name="price" min="0" step="0.01" required />
+      </div>
+      <div class="form-field">
+        <label for="stock">Stok</label>
+        <input id="stock" type="number" [(ngModel)]="stock" name="stock" min="0" required />
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="imageUrl">Görsel URL <span class="optional">(opsiyonel)</span></label>
+      <input id="imageUrl" type="text" [(ngModel)]="imageUrl" name="imageUrl" />
+    </div>
+
+    <div class="form-field">
+      <label for="themeId">Tema</label>
+      <select id="themeId" [(ngModel)]="themeId" name="themeId" required>
+        <option [ngValue]="null" disabled>Tema seç...</option>
+        <option *ngFor="let t of themes" [ngValue]="t.id">
+          {{ t.themeType }}
+        </option>
+      </select>
+      <span *ngIf="themes.length === 0" class="hint">Önce Swagger'dan tema oluştur (POST /api/themes)</span>
+    </div>
+
+    <div class="form-field">
+      <label for="variantId">Koleksiyon / Varyant</label>
+      <select id="variantId" [(ngModel)]="variantId" name="variantId" required>
+        <option [ngValue]="null" disabled>Varyant seç...</option>
+        <option *ngFor="let v of variantOptions" [ngValue]="v.id">{{ v.label }}</option>
+      </select>
+      <span *ngIf="variantOptions.length === 0" class="hint">Önce koleksiyon oluştur (/admin/collections)</span>
+    </div>
+
+    <div *ngIf="error" class="form-error">{{ error }}</div>
+
+    <div class="form-actions">
+      <a class="btn-ghost" routerLink="/admin/products">İptal</a>
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Kaydediliyor...' : (isEditMode ? 'Güncelle' : 'Oluştur') }}
+      </button>
+    </div>
+  </form>
+</main>
