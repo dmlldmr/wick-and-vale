@@ -1,0 +1,106 @@
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background-color: #1c1812;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-24) var(--spacing-20);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  font-family: var(--font-pp-right-grotesk);
+  font-weight: var(--font-weight-medium);
+  font-size: 15px;
+  color: #f5f0e8;
+  letter-spacing: 0.01em;
+}
+
+.admin-badge {
+  font-family: var(--font-shne);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  color: #1c1812;
+  background-color: #c8a96e;
+  border-radius: 3px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-16) var(--spacing-12);
+  gap: var(--spacing-4);
+  flex: 1;
+}
+
+.nav-item {
+  display: block;
+  padding: var(--spacing-8) var(--spacing-12);
+  border-radius: var(--radius-md);
+  font-family: var(--font-shne);
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  color: #b8b0a4;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #f5f0e8;
+  }
+
+  &.active {
+    background-color: rgba(200, 169, 110, 0.15);
+    color: #c8a96e;
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.sidebar-footer {
+  padding: var(--spacing-20) var(--spacing-12);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logout-btn {
+  width: 100%;
+  padding: var(--spacing-8) var(--spacing-12);
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  font-family: var(--font-shne);
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  color: #b8b0a4;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #f5f0e8;
+  }
+}
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--color-paper-white);
+}

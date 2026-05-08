@@ -1,0 +1,25 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="brand-name">Wick &amp; Wale</span>
+      <h1 class="auth-title">Kayıt Ol</h1>
+    </div>
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <label for="name">Ad Soyad</label>
+        <input id="name" type="text" [(ngModel)]="name" name="name" placeholder="Adın Soyadın" required />
+      </div>
+      <div class="form-field">
+        <label for="email">E-posta</label>
+        <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="ornek@email.com" required />
+      </div>
+      <div class="form-field">
+        <label for="password">Şifre</label>
+        <input id="password" type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required />
+      </div>
+      <p class="auth-error" *ngIf="error">{{ error }}</p>
+      <button class="btn-primary" type="submit">Kayıt Ol</button>
+    </form>
+    <p class="auth-link">Zaten hesabın var mı? <a routerLink="/login">Giriş Yap</a></p>
+  </div>
+</div>

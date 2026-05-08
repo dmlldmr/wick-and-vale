@@ -1,0 +1,52 @@
+<main class="admin-page">
+  <div class="admin-header">
+    <h1 class="admin-title">Siparişler</h1>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+  <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="products-table">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Müşteri</th>
+      <th>Toplam</th>
+      <th>Sipariş Durumu</th>
+      <th>Ödeme</th>
+      <th>Tarih</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="orders.length === 0">
+      <td colspan="7" class="empty-row">Henüz sipariş yok.</td>
+    </tr>
+    <tr *ngFor="let order of orders">
+      <td class="order-id">#{{ order.id }}</td>
+      <td>{{ order.customerName || '—' }}</td>
+      <td>{{ formatPrice(order.totalPrice) }}</td>
+      <td>
+            <span class="status-badge" [class]="'status-' + order.orderStatus.toLowerCase()">
+              {{ getOrderStatusLabel(order.orderStatus) }}
+            </span>
+      </td>
+      <td>
+            <span class="status-badge" [class]="'payment-' + order.paymentStatus.toLowerCase()">
+              {{ getPaymentStatusLabel(order.paymentStatus) }}
+            </span>
+      </td>
+      <td>{{ formatDate(order.createdAt) }}</td>
+      <td class="actions">
+        <button class="btn-edit" (click)="goToDetail(order.id)">Detay</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && totalPages > 1" class="pagination">
+    <button class="btn-page" (click)="prevPage()" [disabled]="currentPage === 0">← Önceki</button>
+    <span class="page-info">{{ currentPage + 1 }} / {{ totalPages }}</span>
+    <button class="btn-page" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Sonraki →</button>
+  </div>
+</main>

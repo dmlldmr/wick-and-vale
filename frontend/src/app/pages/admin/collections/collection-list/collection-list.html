@@ -1,0 +1,34 @@
+<main class="admin-page">
+  <div class="admin-header">
+    <h1 class="admin-title">Koleksiyonlar</h1>
+    <a class="btn-primary" routerLink="/admin/collections/new">+ Yeni Koleksiyon</a>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+  <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="products-table">
+    <thead>
+    <tr>
+      <th>Tür</th>
+      <th>Açıklama</th>
+      <th>Kapak Görseli</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="collections.length === 0">
+      <td colspan="4" class="empty-row">Henüz koleksiyon yok.</td>
+    </tr>
+    <tr *ngFor="let col of collections">
+      <td>{{ getTypeLabel(col.collectionType) }}</td>
+      <td>{{ col.description || '—' }}</td>
+      <td>{{ col.coverImage || '—' }}</td>
+      <td class="actions">
+        <button class="btn-edit" (click)="edit(col.id)">Düzenle</button>
+        <button class="btn-delete" (click)="delete(col.id)">Sil</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</main>

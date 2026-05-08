@@ -1,0 +1,130 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-paper-white);
+  padding: var(--spacing-24);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-28);
+}
+
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.brand-name {
+  font-family: var(--font-pp-right-grotesk);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-shadow-tone);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.auth-title {
+  font-family: var(--font-pp-right-grotesk);
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-ink);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+
+  label {
+    font-size: 13px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-shadow-tone);
+    letter-spacing: 0.02em;
+  }
+
+  input {
+    width: 100%;
+    padding: var(--spacing-12) var(--spacing-16);
+    border: 1px solid var(--color-stone-line);
+    border-radius: var(--radius-bodyelements);
+    background-color: var(--color-paper-white);
+    font-family: var(--font-shne);
+    font-size: 15px;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+
+    &::placeholder {
+      color: var(--color-pebble-gray);
+    }
+
+    &:focus {
+      border-color: var(--color-shadow-tone);
+    }
+  }
+}
+
+.auth-error {
+  font-size: 13px;
+  color: #c0392b;
+  padding: var(--spacing-8) var(--spacing-12);
+  background-color: #fdf2f2;
+  border-radius: var(--radius-sm);
+  border: 1px solid #f5c6c6;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: var(--spacing-12) var(--spacing-24);
+  background-color: var(--color-ink);
+  color: var(--color-paper-white);
+  border: none;
+  border-radius: var(--radius-buttons);
+  font-family: var(--font-shne);
+  font-size: 15px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  margin-top: var(--spacing-4);
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.65;
+  }
+}
+
+.auth-link {
+  font-size: 14px;
+  color: var(--color-shadow-tone);
+  text-align: center;
+
+  a {
+    color: var(--color-ink);
+    font-weight: var(--font-weight-medium);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}

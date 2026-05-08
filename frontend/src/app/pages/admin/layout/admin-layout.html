@@ -1,0 +1,43 @@
+<div class="admin-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="brand">Wick-N-Wale</span>
+      <span class="admin-badge">Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a
+        routerLink="/admin/products"
+        routerLinkActive="active"
+        class="nav-item">
+        Ürünler
+      </a>
+      <a
+        routerLink="/admin/collections"
+        routerLinkActive="active"
+        class="nav-item">
+        Koleksiyonlar
+      </a>
+      <a
+        routerLink="/admin/orders"
+        routerLinkActive="active"
+        class="nav-item">
+        Siparişler
+      </a>
+      <a
+        routerLink="/admin/users"
+        routerLinkActive="active"
+        class="nav-item">
+        Kullanıcılar
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
+    </div>
+  </aside>
+
+  <main class="admin-content">
+    <router-outlet />
+  </main>
+</div>

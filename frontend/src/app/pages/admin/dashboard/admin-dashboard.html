@@ -1,0 +1,44 @@
+<main class="admin-page">
+  <div class="admin-header">
+    <h1 class="admin-title">Ürünler</h1>
+    <a class="btn-primary" routerLink="/admin/products/new">+ Yeni Ürün</a>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+  <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="products-table">
+    <thead>
+    <tr>
+      <th>Ad</th>
+      <th>Tema</th>
+      <th>Koleksiyon / Varyant</th>
+      <th>Fiyat</th>
+      <th>Stok</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="products.length === 0">
+      <td colspan="6" class="empty-row">Henüz ürün yok.</td>
+    </tr>
+    <tr *ngFor="let product of products">
+      <td>{{ product.name }}</td>
+      <td>{{ getThemeLabel(product.themeType) }}</td>
+      <td>{{ getCollectionLabel(product.collectionType) }} / {{ getVariantLabel(product.variantType) }}</td>
+      <td>{{ formatPrice(product.price) }}</td>
+      <td>{{ product.stock }}</td>
+      <td class="actions">
+        <button class="btn-edit" (click)="editProduct(product.id)">Düzenle</button>
+        <button class="btn-delete" (click)="deleteProduct(product.id)">Sil</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && totalPages > 1" class="pagination">
+    <button class="btn-page" (click)="prevPage()" [disabled]="currentPage === 0">← Önceki</button>
+    <span class="page-info">{{ currentPage + 1 }} / {{ totalPages }}</span>
+    <button class="btn-page" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Sonraki →</button>
+  </div>
+</main>

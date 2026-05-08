@@ -1,0 +1,14 @@
+<nav class="navbar">
+  <a class="navbar-brand" routerLink="/home">Wick &amp; Vale</a>
+  <div class="navbar-nav">
+    <a class="nav-link" routerLink="/home">Ürünler</a>
+    <ng-container *ngIf="authService.isLoggedIn(); else authLinks">
+      <span class="nav-user">{{ currentUser?.name }}</span>
+      <button class="nav-btn-ghost" (click)="logout()">Çıkış</button>
+    </ng-container>
+    <ng-template #authLinks>
+      <a class="nav-link" routerLink="/login">Giriş Yap</a>
+      <a class="nav-btn-primary" routerLink="/register">Kayıt Ol</a>
+    </ng-template>
+  </div>
+</nav>
