@@ -4,60 +4,153 @@
     <h1 class="admin-title">{{ isEditMode ? 'Ürünü Düzenle' : 'Yeni Ürün' }}</h1>
   </div>
 
-  <div *ngIf="loadingOptions" class="state-message">Yükleniyor...</div>
+  <div *ngIf="loadingOptions" class="state-message">
+    <div class="spinner"></div>
+    <p>Seçenekler yükleniyor...</p>
+  </div>
 
   <form *ngIf="!loadingOptions" class="product-form" (ngSubmit)="onSubmit()">
+    <!-- Ürün Adı -->
     <div class="form-field">
-      <label for="name">Ürün Adı</label>
-      <input id="name" type="text" [(ngModel)]="name" name="name" required />
+      <label for="name">Ürün Adı *</label>
+      <input
+        id="name"
+        type="text"
+        [(ngModel)]="name"
+        name="name"
+        required
+        placeholder="Örn: Soft Bodul Desenli Lavanta Mumu"
+        class="form-control" />
     </div>
 
+    <!-- Açıklama -->
     <div class="form-field">
       <label for="description">Açıklama <span class="optional">(opsiyonel)</span></label>
-      <textarea id="description" [(ngModel)]="description" name="description" rows="3"></textarea>
+      <textarea
+        id="description"
+        [(ngModel)]="description"
+        name="description"
+        rows="4"
+        placeholder="Ürün hakkında detaylı bilgi..."
+        class="form-control"></textarea>
     </div>
 
+    <!-- Fiyat ve Stok -->
     <div class="form-row">
       <div class="form-field">
-        <label for="price">Fiyat (₺)</label>
-        <input id="price" type="number" [(ngModel)]="price" name="price" min="0" step="0.01" required />
+        <label for="price">Fiyat (₺) *</label>
+        <input
+          id="price"
+          type="number"
+          [(ngModel)]="price"
+          name="price"
+          min="0"
+          step="0.01"
+          required
+          class="form-control" />
       </div>
       <div class="form-field">
-        <label for="stock">Stok</label>
-        <input id="stock" type="number" [(ngModel)]="stock" name="stock" min="0" required />
+        <label for="stock">Stok Adedi *</label>
+        <input
+          id="stock"
+          type="number"
+          [(ngModel)]="stock"
+          name="stock"
+          min="0"
+          required
+          class="form-control" />
       </div>
     </div>
 
+    <!-- Tema Seçimi -->
     <div class="form-field">
-      <label for="imageUrl">Görsel URL <span class="optional">(opsiyonel)</span></label>
-      <input id="imageUrl" type="text" [(ngModel)]="imageUrl" name="imageUrl" />
-    </div>
-
-    <div class="form-field">
-      <label for="themeId">Tema</label>
-      <select id="themeId" [(ngModel)]="themeId" name="themeId" required>
-        <option [ngValue]="null" disabled>Tema seç...</option>
-        <option *ngFor="let t of themes" [ngValue]="t.id">
-          {{ t.themeType }}
+      <label for="themeId">Tema *</label>
+      <select
+        id="themeId"
+        [(ngModel)]="themeId"
+        name="themeId"
+        required
+        class="form-control">
+        <option [ngValue]="null" disabled>Tema seçin...</option>
+        <option *ngFor="let theme of themes" [ngValue]="theme.id">
+          {{ getThemeLabel(theme.themeType) }}
         </option>
       </select>
-      <span *ngIf="themes.length === 0" class="hint">Önce Swagger'dan tema oluştur (POST /api/themes)</span>
     </div>
 
+    <!-- Koleksiyon/Varyant Seçimi -->
     <div class="form-field">
-      <label for="variantId">Koleksiyon / Varyant</label>
-      <select id="variantId" [(ngModel)]="variantId" name="variantId" required>
-        <option [ngValue]="null" disabled>Varyant seç...</option>
-        <option *ngFor="let v of variantOptions" [ngValue]="v.id">{{ v.label }}</option>
+      <label for="variantId">Koleksiyon / Varyant *</label>
+      <select
+        id="variantId"
+        [(ngModel)]="variantId"
+        name="variantId"
+        required
+        class="form-control">
+        <option [ngValue]="null" disabled>Koleksiyon ve varyant seçin...</option>
+        <option *ngFor="let variant of variantOptions" [ngValue]="variant.id">
+          {{ variant.label }}
+        </option>
       </select>
-      <span *ngIf="variantOptions.length === 0" class="hint">Önce koleksiyon oluştur (/admin/collections)</span>
+      <span *ngIf="variantOptions.length === 0" class="hint">
+        ⚠️ Önce koleksiyon oluşturmalısınız (/admin/collections)
+      </span>
     </div>
 
-    <div *ngIf="error" class="form-error">{{ error }}</div>
+    <!-- Görsel Yükleme -->
+    <div class="form-field">
+      <label>Ürün Görseli {{ isEditMode ? '(opsiyonel)' : '*' }}</label>
 
+      <input
+        type="file"
+        #fileInput
+        accept="image/jpeg,image/png,image/gif,image/webp"
+        (change)="onFileSelected($event)"
+        hidden
+      />
+
+      <button type="button" class="btn-secondary" (click)="fileInput.click()">
+        📷 Görsel Seç
+      </button>
+
+      <span class="field-hint">JPEG, PNG, GIF (Max 2MB)</span>
+    </div>
+
+    <!-- Görsel Önizleme -->
+    <div class="form-field" *ngIf="imagePreview">
+      <label>Önizleme</label>
+      <div class="image-preview-container">
+        <img
+          [src]="imagePreview"
+          alt="Ürün görseli"
+          class="image-preview"
+        />
+        <button
+          type="button"
+          class="btn-remove"
+          (click)="removeImage()"
+          title="Görseli kaldır">
+          🗑️ Kaldır
+        </button>
+      </div>
+    </div>
+
+    <!-- Mesajlar -->
+    <div *ngIf="error" class="form-error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="success" class="form-success">
+      {{ success }}
+    </div>
+
+    <!-- Form Aksiyonları -->
     <div class="form-actions">
       <a class="btn-ghost" routerLink="/admin/products">İptal</a>
-      <button type="submit" class="btn-primary" [disabled]="loading">
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading">
         {{ loading ? 'Kaydediliyor...' : (isEditMode ? 'Güncelle' : 'Oluştur') }}
       </button>
     </div>

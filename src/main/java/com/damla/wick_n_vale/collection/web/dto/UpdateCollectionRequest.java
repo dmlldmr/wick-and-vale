@@ -1,13 +1,11 @@
 package com.damla.wick_n_vale.collection.web.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.damla.wick_n_vale.product.enumaration.CollectionType;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UpdateCollectionRequest {
-
+    private CollectionType collectionType;
     private String description;
-
-    private String coverImage;
+    private String coverImage;  // Backend tarafından set edilecek
 }

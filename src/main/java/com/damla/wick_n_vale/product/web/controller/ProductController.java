@@ -1,5 +1,6 @@
 package com.damla.wick_n_vale.product.web.controller;
 
+import com.damla.wick_n_vale.common.service.FileService;
 import com.damla.wick_n_vale.product.enumaration.CollectionType;
 import com.damla.wick_n_vale.product.enumaration.VariantType;
 import com.damla.wick_n_vale.product.service.ProductService;
@@ -12,8 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,15 +24,39 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
+    private final FileService fileService;  // 🔥 FileService eklendi
 
-    @PostMapping
-    public ResponseEntity<ProductResponse> create(@Valid @RequestBody CreateProductRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> create(
+            @RequestPart("data") @Valid CreateProductRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile file) {
+
+        // Dosyayı kaydet ve URL al
+        String imageUrl = fileService.saveFile(file, "products");
+        request.setImageUrl(imageUrl);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productService.create(request));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> update(
-            @PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
+            @PathVariable Long id,
+            @RequestPart("data") @Valid UpdateProductRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile file) {
+
+        // Yeni dosya varsa kaydet, eskiyi sil
+        if (file != null && !file.isEmpty()) {
+            // Eski resmi bul
+            ProductResponse existing = productService.getById(id);
+            if (existing.getImageUrl() != null) {
+                fileService.deleteFile(existing.getImageUrl());
+            }
+
+            String imageUrl = fileService.saveFile(file, "products");
+            request.setImageUrl(imageUrl);
+        }
+
         return ResponseEntity.ok(productService.update(id, request));
     }
 
@@ -76,6 +103,11 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        // Önce resmi sil
+        ProductResponse existing = productService.getById(id);
+        if (existing.getImageUrl() != null) {
+            fileService.deleteFile(existing.getImageUrl());
+        }
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }

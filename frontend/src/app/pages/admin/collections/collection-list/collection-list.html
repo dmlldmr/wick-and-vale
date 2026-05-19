@@ -23,7 +23,17 @@
     <tr *ngFor="let col of collections">
       <td>{{ getTypeLabel(col.collectionType) }}</td>
       <td>{{ col.description || '—' }}</td>
-      <td>{{ col.coverImage || '—' }}</td>
+      <td>
+        <img
+          *ngIf="col.coverImage"
+          [src]="col.coverImage"
+          alt="kapak"
+          width="60"
+          height="60"
+          style="object-fit: cover; border-radius: 6px;"
+          />
+        <span *ngIf="!col.coverImage">-</span>
+      </td>
       <td class="actions">
         <button class="btn-edit" (click)="edit(col.id)">Düzenle</button>
         <button class="btn-delete" (click)="delete(col.id)">Sil</button>

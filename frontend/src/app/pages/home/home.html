@@ -1,33 +1,30 @@
-<app-navbar />
+<div class="home-container">
+  <div class="hero-section">
+    <h1>Wick N' Vale</h1>
+    <p>El yapımı mumlar ile evinize sıcaklık katın</p>
+  </div>
 
-<main class="home-page">
-  <section class="hero">
-    <p class="hero-eyebrow">El yapımı mumlar</p>
-    <h1 class="hero-title">Işığın<br>Kokusu</h1>
-    <p class="hero-sub">Doğal malzemelerden üretilen, benzersiz tasarımlara sahip mumlarla yaşam alanlarınıza sıcaklık katın.</p>
-  </section>
+  <div class="products-section">
+    <h2>Öne Çıkan Ürünler</h2>
 
-  <section class="products-section">
-    <div class="section-header">
-      <h2 class="section-title">Ürünler</h2>
-    </div>
+    <div *ngIf="loading" class="loading">Yükleniyor...</div>
 
-    <div *ngIf="loading" class="state-message">Yükleniyor...</div>
-    <div *ngIf="error" class="state-message state-error">{{ error }}</div>
-
-    <div *ngIf="!loading && !error" class="products-grid">
-      <div *ngIf="products.length === 0" class="state-message">Henüz ürün eklenmemiş.</div>
-      <article class="product-card" *ngFor="let product of products">
-        <div class="product-image">
-          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" />
-          <div *ngIf="!product.imageUrl" class="product-image-placeholder"></div>
+    <div *ngIf="!loading" class="products-grid">
+      <div *ngFor="let product of products" class="product-card">
+        <div class="product-image-container">
+          <!-- 🔥 image -> imageUrl -->
+          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="product-image">
+          <div *ngIf="!product.imageUrl" class="product-image-placeholder">
+            🕯️
+          </div>
         </div>
         <div class="product-info">
-          <span class="product-type">{{ getCollectionLabel(product.collectionType) }}</span>
           <h3 class="product-name">{{ product.name }}</h3>
-          <p class="product-price">{{ formatPrice(product.price) }}</p>
+          <p class="product-type">{{ product.collectionType }} - {{ product.variantType }}</p>
+          <p class="product-price">{{ product.price }} ₺</p>
+          <button class="btn-view" [routerLink]="['/products', product.id]">İncele</button>
         </div>
-      </article>
+      </div>
     </div>
-  </section>
-</main>
+  </div>
+</div>

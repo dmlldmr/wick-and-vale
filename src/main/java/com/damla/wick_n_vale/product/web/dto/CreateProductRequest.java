@@ -1,35 +1,28 @@
 package com.damla.wick_n_vale.product.web.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
 public class CreateProductRequest {
-
-    @NotBlank
+    @NotNull(message = "Ürün adı zorunludur")
     private String name;
 
     private String description;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "Fiyat zorunludur")
     private BigDecimal price;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "Stok zorunludur")
     private Integer stock;
 
-    private String imageUrl;
-
-    @NotNull
+    @NotNull(message = "Tema seçimi zorunludur")
     private Long themeId;
 
-    @NotNull
+    @NotNull(message = "Varyant seçimi zorunludur")
     private Long variantId;
+
+    private String imageUrl;  // Backend tarafından set edilecek
 }

@@ -1,27 +1,11 @@
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  imageUrl?: string;
-  themeId: number;
-  themeType: string;
-  variantId: number;
-  variantType: string;
-  collectionId: number;
-  collectionType: string;
-  createdAt: string;
-}
-
 export interface CreateProductRequest {
   name: string;
-  description: string;
+  description?: string;
   price: number;
   stock: number;
-  imageUrl: string;
   themeId: number;
   variantId: number;
+  // imageUrl backend tarafından set edilecek, frontend göndermiyor
 }
 
 export interface UpdateProductRequest {
@@ -29,16 +13,32 @@ export interface UpdateProductRequest {
   description?: string;
   price?: number;
   stock?: number;
-  imageUrl?: string;
   themeId?: number;
   variantId?: number;
+  // imageUrl backend tarafından set edilecek
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string | null;
+  price: number;
+  stock: number;
+  imageUrl: string;
+  themeId: number;
+  themeType: string;
+  variantId: number;
+  variantType: string;
+  collectionId: number;
+  collectionType: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;
   totalPages: number;
+  size: number;
   number: number;
-  first: boolean;
-  last: boolean;
 }

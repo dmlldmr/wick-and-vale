@@ -1,0 +1,80 @@
+<main class="admin-page">
+  <div class="admin-header">
+    <h1 class="admin-title">Ürün Yönetimi</h1>
+    <a class="btn-primary" routerLink="/admin/products/new">+ Yeni Ürün</a>
+  </div>
+
+  <!-- Filtreleme -->
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Ürün ara..."
+      class="search-input"
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()" />
+  </div>
+
+  <div *ngIf="loading" class="state-message">Yükleniyor...</div>
+  <div *ngIf="error" class="state-message state-error">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="products-table">
+    <thead>
+    <tr>
+      <th>Görsel</th>
+      <th>Ürün Adı</th>
+      <th>Koleksiyon / Varyant / Tema</th>
+      <th>Fiyat</th>
+      <th>Stok</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="products.length === 0">
+      <td colspan="6" class="empty-row">Henüz ürün yok.</td>
+    </tr>
+    <tr *ngFor="let product of products">
+      <td class="product-image-cell">
+        <img
+          *ngIf="product.imageUrl && product.imageUrl !== ''"
+          [src]="product.imageUrl"
+          [alt]="product.name"
+          class="product-thumbnail"
+        />
+        <div *ngIf="!product.imageUrl || product.imageUrl === ''" class="no-image">
+          🕯️
+        </div>
+      </td>
+      <td class="product-name">{{ product.name }}</td>
+      <td class="product-category">
+        {{ getCollectionLabel(product.collectionType) }} - {{ getVariantLabel(product.variantType) }}
+        <span class="theme-badge">{{ getThemeLabel(product.themeType) }}</span>
+      </td>
+      <td class="product-price">{{ product.price }} ₺</td>
+      <td class="product-stock" [class.low-stock]="product.stock < 10">
+        {{ product.stock }}
+      </td>
+      <td class="actions">
+        <button class="btn-edit" (click)="editProduct(product.id)">Düzenle</button>
+        <button class="btn-delete" (click)="deleteProduct(product.id)">Sil</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Sayfalama -->
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button
+      class="page-btn"
+      [disabled]="currentPage === 0"
+      (click)="changePage(currentPage - 1)">
+      ← Önceki
+    </button>
+    <span class="page-info">{{ currentPage + 1 }} / {{ totalPages }}</span>
+    <button
+      class="page-btn"
+      [disabled]="currentPage === totalPages - 1"
+      (click)="changePage(currentPage + 1)">
+      Sonraki →
+    </button>
+  </div>
+</main>

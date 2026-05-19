@@ -61,6 +61,7 @@ public class CollectionServiceImpl implements CollectionService {
         CollectionEntity collection = collectionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collection not found: " + id));
 
+        if (request.getCollectionType() != null) collection.setCollectionType(request.getCollectionType());
         if (request.getDescription() != null) collection.setDescription(request.getDescription());
         if (request.getCoverImage() != null) collection.setCoverImage(request.getCoverImage());
 

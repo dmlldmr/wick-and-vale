@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import {adminGuard} from './core/guards/admin-guard';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full'},
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', loadComponent: () => import('./pages/home/home').then(m => m.Home) },
   { path: 'login', loadComponent: () => import('./pages/auth/login/login').then(m => m.Login) },
   { path: 'register', loadComponent: () => import('./pages/auth/register/register').then(m => m.Register) },
@@ -11,17 +11,29 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/layout/admin-layout').then(m => m.AdminLayout),
     canActivate: [adminGuard],
     children: [
-      { path: '', redirectTo: 'products', pathMatch: 'full'},
-      { path: 'products', loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboard) },
+      { path: '', redirectTo: 'products', pathMatch: 'full' },
+
+      // Dashboard (Admin ana sayfa)
+      { path: 'dashboard', loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboard) },
+
+      // Products - Ürün Yönetimi
+      { path: 'products', loadComponent: () => import('./pages/admin/products/product-list/product-list').then(m => m.ProductList) },
       { path: 'products/new', loadComponent: () => import('./pages/admin/products/product-form/product-form').then(m => m.ProductsForm) },
-      { path: 'products/:id/edit', loadComponent: () => import('./pages/admin/products/product-form/product-form').then(m => m.ProductsForm)},
+      { path: 'products/edit/:id', loadComponent: () => import('./pages/admin/products/product-form/product-form').then(m => m.ProductsForm) },
+
+      // Collections - Koleksiyon Yönetimi
       { path: 'collections', loadComponent: () => import('./pages/admin/collections/collection-list/collection-list').then(m => m.CollectionList) },
       { path: 'collections/new', loadComponent: () => import('./pages/admin/collections/collection-form/collection-form').then(m => m.CollectionForm) },
-      { path: 'collections/:id/edit', loadComponent: () => import('./pages/admin/collections/collection-form/collection-form').then(m => m.CollectionForm) },
+      { path: 'collections/edit/:id', loadComponent: () => import('./pages/admin/collections/collection-form/collection-form').then(m => m.CollectionForm) },
+
+      // Orders - Sipariş Yönetimi
       { path: 'orders', loadComponent: () => import('./pages/admin/orders/order-list/order-list').then(m => m.OrderList) },
       { path: 'orders/:id', loadComponent: () => import('./pages/admin/orders/order-detail/order-detail').then(m => m.OrderDetail) },
-      { path: 'user', loadComponent: () => import('./pages/admin/user/user-list/user-list').then(m => m.UserList) },
 
+      // Users - Kullanıcı Yönetimi
+      { path: 'users', loadComponent: () => import('./pages/admin/user/user-list/user-list').then(m => m.UserList) },
     ]
   },
+  // 404 - Sayfa bulunamadı (opsiyonel)
+  { path: '**', redirectTo: 'home' }
 ];

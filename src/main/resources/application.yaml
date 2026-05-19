@@ -7,12 +7,19 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # Dev ortam için: entity’den tablo oluşturur
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
 
 jwt:
   secret: ${JWT_SECRET:cok-uzun-ve-guclu-bir-secret-key-an-az-32-karakter-olmali}
@@ -20,3 +27,8 @@ jwt:
 
 server:
   port: 8080
+  base-url: http://localhost:8080
+
+file:
+  upload:
+    base-dir: uploads

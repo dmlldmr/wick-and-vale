@@ -5,33 +5,89 @@
   </div>
 
   <form class="product-form" (ngSubmit)="onSubmit()">
-    <div class="form-field" *ngIf="!isEditMode">
-      <label for="type">Tür</label>
-      <select id="type" [(ngModel)]="collectionType" name="collectionType" required>
-        <option *ngFor="let t of collectionTypes" [value]="t.value">{{ t.label }}</option>
+    <!-- Koleksiyon Tipi -->
+    <div class="form-field">
+      <label for="type">Tür *</label>
+      <select
+        id="type"
+        [(ngModel)]="collectionType"
+        name="collectionType"
+        required
+      >
+        <option *ngFor="let t of collectionTypes" [value]="t.value">
+          {{ t.label }}
+        </option>
       </select>
     </div>
 
-    <div class="form-field" *ngIf="isEditMode">
-      <label>Tür</label>
-      <input type="text" [value]="collectionType" disabled />
-    </div>
-
+    <!-- Açıklama -->
     <div class="form-field">
       <label for="description">Açıklama <span class="optional">(opsiyonel)</span></label>
-      <textarea id="description" [(ngModel)]="description" name="description" rows="4"></textarea>
+      <textarea
+        id="description"
+        [(ngModel)]="description"
+        name="description"
+        rows="4"
+        placeholder="Bu koleksiyon hakkında kısa bir açıklama..."></textarea>
     </div>
 
+    <!-- Görsel Yükleme - YENİ CLASS -->
     <div class="form-field">
-      <label for="coverImage">Kapak Görseli URL <span class="optional">(opsiyonel)</span></label>
-      <input id="coverImage" type="text" [(ngModel)]="coverImage" name="coverImage" />
+      <label>Kapak Görseli {{ isEditMode ? '(opsiyonel)' : '*' }}</label>
+
+      <input
+        type="file"
+        #fileInput
+        accept="image/jpeg,image/png,image/gif,image/webp"
+        (change)="onFileSelected($event)"
+        hidden
+      />
+
+      <button
+        type="button"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;"
+        (click)="fileInput.click()">
+        📷 Görsel Seç
+      </button>
+
+      <span class="field-hint">JPEG, PNG, GIF (Max 2MB)</span>
     </div>
 
-    <div *ngIf="error" class="form-error">{{ error }}</div>
+    <!-- Görsel Önizleme - YENİ CLASS -->
+    <div class="form-field" *ngIf="coverImagePreview">
+      <label>Önizleme</label>
+      <div class="image-preview-container">
+        <img
+          [src]="coverImagePreview"
+          alt="Koleksiyon görseli"
+          class="image-preview"
+        />
+        <button
+          type="button"
+          class="btn-remove"
+          (click)="removeImage()">
+          🗑️ Görseli Kaldır
+        </button>
+      </div>
+    </div>
 
+    <!-- Hata Mesajı -->
+    <div *ngIf="error" class="form-error">
+      {{ error }}
+    </div>
+
+    <!-- Başarı Mesajı -->
+    <div *ngIf="success" class="form-success">
+      {{ success }}
+    </div>
+
+    <!-- Form Aksiyonları -->
     <div class="form-actions">
       <a class="btn-ghost" routerLink="/admin/collections">İptal</a>
-      <button type="submit" class="btn-primary" [disabled]="loading">
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading">
         {{ loading ? 'Kaydediliyor...' : (isEditMode ? 'Güncelle' : 'Oluştur') }}
       </button>
     </div>

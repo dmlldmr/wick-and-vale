@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .stock(request.getStock())
-                .imageUrl(request.getImageUrl())
+                .imageUrl(request.getImageUrl())  // 🔥 Değişiklik 1: getImage() -> getImageUrl()
                 .theme(theme)
                 .variant(variant)
                 .build();
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
         if (request.getDescription() != null) product.setDescription(request.getDescription());
         if (request.getPrice() != null) product.setPrice(request.getPrice());
         if (request.getStock() != null) product.setStock(request.getStock());
-        if (request.getImageUrl() != null) product.setImageUrl(request.getImageUrl());
+        if (request.getImageUrl() != null) product.setImageUrl(request.getImageUrl());  // 🔥 Değişiklik 2: getImage() -> getImageUrl()
 
         if (request.getThemeId() != null) {
             ThemeEntity theme = themeRepository.findById(request.getThemeId())

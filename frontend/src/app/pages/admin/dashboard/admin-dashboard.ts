@@ -1,81 +1,83 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Router, RouterModule} from '@angular/router';
-import {Product} from '../../../core/models/product.model';
-import {ProductService} from '../../../core/services/product';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ProductService } from '../../../core/services/product';
+import { Product } from '../../../core/models/product.model';
+import { ThemeService } from '../../../core/services/theme';
+import { CollectionService } from '../../../core/services/collection';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './admin-dashboard.html',
-  styleUrl: './admin-dashboard.scss'
+  styleUrls: ['./admin-dashboard.scss']
 })
 export class AdminDashboard implements OnInit {
-  products: Product[] = [];
+  recentProducts: Product[] = [];
   loading = true;
-  error = '';
-  currentPage = 0;
-  totalPages = 0;
+
+  private themes: any[] = [];
+  private collections: any[] = [];
 
   constructor(
     private productService: ProductService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
-) {}
+    private themeService: ThemeService,
+    private collectionService: CollectionService
+  ) {}
 
-  ngOnInit() {
-    this.loadProducts();
+  ngOnInit(): void {
+    this.loadData();
   }
 
-  loadProducts() {
-    this.loading = true;
-    this.productService.getAll(this.currentPage).subscribe({
-      next: (page) => { this.products = page.content; this.totalPages = page.totalPages; this.loading = false; this.cdr.detectChanges();},
-      error: () => { this.error = 'Ürünler yükklenemedi.'; this.loading = false; this.cdr.detectChanges(); }
+  private loadData(): void {
+    Promise.all([
+      this.themeService.getAll().toPromise(),
+      this.collectionService.getAll().toPromise(),
+      this.productService.getAll(0, 5).toPromise()
+    ]).then(([themes, collections, products]) => {
+      this.themes = themes || [];
+      this.collections = collections || [];
+      this.recentProducts = products?.content || [];
+      this.loading = false;
+    }).catch(error => {
+      console.error('Veri yüklenirken hata:', error);
+      this.loading = false;
     });
   }
 
-  editProduct(id: number) {
-    this.router.navigate(['/admin/products', id, 'edit']);
-  }
+  getThemeLabel(themeId: number): string {
+    const theme = this.themes.find(t => t.id === themeId);
+    if (!theme) return 'Bilinmeyen Tema';
 
-  deleteProduct(id: number) {
-    if(!confirm('Bu ürünü silmek istediğine emin misin?')) return;
-    this.productService.delete(id).subscribe({
-      next: () => this.loadProducts(),
-      error: () => alert('Ürün silinemedi.')
-    });
-  }
-
-  prevPage() {
-    if (this.currentPage > 0) { this.currentPage--; this.loadProducts(); }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages - 1) { this.currentPage++; this.loadProducts(); }
-  }
-
-  getThemeLabel(type: string): string {
-    const labels: Record<string, string> = { SOFT: 'Soft', OLD: 'Old', VINTAGE: 'Vintage' };
-    return labels[type] || type;
-  }
-
-  getCollectionLabel(type: string): string {
-    const labels: Record<string, string> = { BODUL: 'Bodul', SUTUN: 'Sütun', KUTU: 'Kutu' };
-    return labels[type] || type;
-  }
-
-  getVariantLabel(type: string): string {
-    const labels: Record<string, string>  = {
-      SADE: 'Sade', DESENLI: 'Desenli',
-      INCE: 'İnce', KALIN: 'Kalın',
-      KAGIT: 'Kağıt', TENEKE: 'Teneke'
+    const labels: Record<string, string> = {
+      SOFT: 'Soft',
+      OLD: 'Old',
+      VINTAGE: 'Vintage'
     };
-    return labels[type] || type;
+    return labels[theme.themeType] || theme.themeType;
   }
 
-  formatPrice(price: number): string {
-    return price.toLocaleString('tr-TR', { minimumFractionDigits: 2}) + ' ₺';
+  getCollectionAndVariantLabel(variantId: number): string {
+    for (const collection of this.collections) {
+      const variant = collection.variants?.find((v: any) => v.id === variantId);
+      if (variant) {
+        const collectionLabels: Record<string, string> = {
+          BODUL: 'Bodul',
+          SUTUN: 'Sütun',
+          KUTU: 'Kutu'
+        };
+        const variantLabels: Record<string, string> = {
+          SADE: 'Sade',
+          DESENLI: 'Desenli',
+          INCE: 'İnce',
+          KALIN: 'Kalın',
+          KAGIT: 'Kağıt',
+          TENEKE: 'Teneke'
+        };
+        return `${collectionLabels[collection.collectionType]} - ${variantLabels[variant.variantType]}`;
+      }
+    }
+    return 'Bilinmeyen';
   }
 }
