@@ -1,15 +1,14 @@
 package com.damla.wick_n_vale.security;
 
 import com.damla.wick_n_vale.user.entity.UserEntity;
-import io.jsonwebtoken.Claims; //JWT oluşturmak ve parse etmek için kullanılır.
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey; //JWT imzalamak için kullanılan gizli anahtarın tipi. JWT'nin güvenliği için kullanılır.
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Service
@@ -27,7 +26,7 @@ public class JwtService {
 
     public String generateToken(UserEntity user) {
         return Jwts.builder()
-                .subject(user.getEmail())
+                .subject(String.valueOf(user.getId()))
                 .claim("role", user.getRole().name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
@@ -35,8 +34,8 @@ public class JwtService {
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        return getClaims(token).getSubject();
+    public Long extractUserId(String token) {
+        return Long.parseLong(getClaims(token).getSubject());
     }
 
     public String extractRole(String token) {

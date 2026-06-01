@@ -1,18 +1,18 @@
 package com.damla.wick_n_vale.user.web.controller;
 
 import com.damla.wick_n_vale.user.service.UserService;
-import com.damla.wick_n_vale.user.web.dto.AuthResponse;
-import com.damla.wick_n_vale.user.web.dto.LoginRequest;
-import com.damla.wick_n_vale.user.web.dto.RegisterRequest;
-import com.damla.wick_n_vale.user.web.dto.UserResponse;
+import com.damla.wick_n_vale.user.web.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -38,8 +38,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(userService.getAll());
+    public ResponseEntity<Page<UserResponse>> getAll(@ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(userService.getAll(pageable));
     }
 
     @DeleteMapping("/{id}")
@@ -48,4 +48,23 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserResponse> updateProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody UpdateProfileRequest request) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        return ResponseEntity.ok(userService.updateProfile(userId, request));
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody ChangePasswordRequest request) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        userService.changePassword(userId, request);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

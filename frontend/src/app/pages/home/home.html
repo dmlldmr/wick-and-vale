@@ -1,30 +1,58 @@
-<div class="home-container">
-  <div class="hero-section">
-    <h1>Wick N' Vale</h1>
-    <p>El yapımı mumlar ile evinize sıcaklık katın</p>
+<section class="hero">
+  <p class="hero-eyebrow">El yapımı · Doğal içerikli</p>
+  <h1 class="hero-title">Wick & Vale</h1>
+  <p class="hero-sub">Evinize sıcaklık katan, özenle üretilmiş el yapımı mumlar.</p>
+  <a routerLink="/products" class="hero-cta">Koleksiyonu Keşfet</a>
+</section>
+
+<section class="products-section">
+  <div class="section-header">
+    <h2 class="section-title">Öne Çıkan Ürünler</h2>
+    <a routerLink="/products" class="section-link">Tümünü Gör →</a>
   </div>
 
-  <div class="products-section">
-    <h2>Öne Çıkan Ürünler</h2>
+  <p *ngIf="loading" class="state-message">Yükleniyor...</p>
+  <p *ngIf="error" class="state-message state-error">Ürünler yüklenemedi.</p>
 
-    <div *ngIf="loading" class="loading">Yükleniyor...</div>
-
-    <div *ngIf="!loading" class="products-grid">
-      <div *ngFor="let product of products" class="product-card">
-        <div class="product-image-container">
-          <!-- 🔥 image -> imageUrl -->
-          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="product-image">
-          <div *ngIf="!product.imageUrl" class="product-image-placeholder">
-            🕯️
-          </div>
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">{{ product.name }}</h3>
-          <p class="product-type">{{ product.collectionType }} - {{ product.variantType }}</p>
-          <p class="product-price">{{ product.price }} ₺</p>
-          <button class="btn-view" [routerLink]="['/products', product.id]">İncele</button>
-        </div>
+  <div *ngIf="!loading && !error" class="products-grid">
+    <div *ngFor="let product of products"
+         class="product-card"
+         [routerLink]="['/products', product.id]">
+      <div class="product-image">
+        <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
+        <div *ngIf="!product.imageUrl" class="product-image-placeholder"></div>
+      </div>
+      <div class="product-info">
+          <span class="product-type">
+            {{ collectionLabel(product.collectionType) }} / {{ variantLabel(product.variantType) }}
+          </span>
+        <span class="product-name">{{ product.name }}</span>
+        <span class="product-price">{{ product.price | number:'1.0-0' }} ₺</span>
       </div>
     </div>
   </div>
-</div>
+</section>
+
+<section class="collections-section">
+  <div class="section-header">
+    <h2 class="section-title">Koleksiyonlar</h2>
+  </div>
+
+  <div class="collections-grid">
+    <div *ngFor="let collection of collections"
+         class="collection-card"
+         [routerLink]="['/products']"
+         [queryParams]="{ collection: collection.collectionType }">
+      <div class="collection-image">
+        <img *ngIf="collection.coverImage"
+             [src]="collection.coverImage"
+             [alt]="collectionLabel(collection.collectionType)">
+        <div *ngIf="!collection.coverImage" class="collection-image-placeholder"></div>
+      </div>
+      <div class="collection-info">
+        <span class="collection-name">{{ collectionLabel(collection.collectionType) }}</span>
+        <span *ngIf="collection.description" class="collection-desc">{{ collection.description }}</span>
+      </div>
+    </div>
+  </div>
+</section>

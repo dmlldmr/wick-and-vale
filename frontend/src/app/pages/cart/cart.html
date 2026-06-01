@@ -1,0 +1,54 @@
+<div class="cart-page">
+  <div class="cart-header">
+    <h1 class="cart-title">Sepetim</h1>
+    <button *ngIf="cart() && cart()!.items.length > 0" class="btn-ghost" (click)="clearCart()">
+      Sepeti Temizle
+    </button>
+  </div>
+
+  <div *ngIf="loading()" class="cart-empty">
+    <p>Yükleniyor...</p>
+  </div>
+
+  <div *ngIf="error()" class="cart-empty">
+    <p class="error-text">{{ error() }}</p>
+  </div>
+
+  <ng-container *ngIf="!loading() && !error()">
+    <div *ngIf="cart() && cart()!.items.length === 0" class="cart-empty">
+      <p>Sepetiniz boş.</p>
+      <a routerLink="/products" class="btn-primary">Alışverişe Başla</a>
+    </div>
+
+    <div *ngIf="cart() && cart()!.items.length > 0" class="cart-content">
+      <div class="cart-items">
+        <div class="cart-item" *ngFor="let item of cart()!.items">
+          <img *ngIf="item.imageUrl" class="item-image" [src]="item.imageUrl" [alt]="item.name" />
+          <div *ngIf="!item.imageUrl" class="item-image-placeholder"></div>
+          <div class="item-info">
+            <h3 class="item-name">{{ item.name }}</h3>
+            <p class="item-meta">{{ item.collectionType }} · {{ item.variantType }}</p>
+            <p class="item-price">{{ item.price | number:'1.0-0' }} ₺</p>
+          </div>
+          <div class="item-controls">
+            <button class="qty-btn" (click)="updateQuantity(item, item.quantity - 1)">−</button>
+            <span class="qty-value">{{ item.quantity }}</span>
+            <button class="qty-btn" (click)="updateQuantity(item, item.quantity + 1)">+</button>
+          </div>
+          <div class="item-subtotal">
+            {{ item.subtotal | number:'1.0-0' }} ₺
+          </div>
+          <button class="remove-btn" (click)="removeItem(item)">✕</button>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Toplam ({{ cart()!.totalItems }} ürün)</span>
+          <span class="summary-total">{{ cart()!.totalPrice | number:'1.0-0' }} ₺</span>
+        </div>
+        <button class="btn-primary checkout-btn">Siparişe Geç</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

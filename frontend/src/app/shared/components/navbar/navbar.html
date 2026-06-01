@@ -1,9 +1,20 @@
 <nav class="navbar">
   <a class="navbar-brand" routerLink="/home">Wick &amp; Vale</a>
   <div class="navbar-nav">
-    <a class="nav-link" routerLink="/home">Ürünler</a>
+    <a class="nav-link" routerLink="/products">Ürünler</a>
+
+    <a *ngIf="authService.isLoggedIn() && authService.isAdmin()" class="nav-link nav-admin" routerLink="/admin/products">
+      📊 Admin Panel
+    </a>
+
     <ng-container *ngIf="authService.isLoggedIn(); else authLinks">
-      <span class="nav-user">{{ currentUser?.name }}</span>
+      <a class="nav-user" routerLink="/profile">{{ currentUser?.name }}</a>
+      <a class="nav-cart" routerLink="/cart">
+        Sepet
+        <span class="cart-badge" *ngIf="cartService.cartCount() > 0">
+      {{ cartService.cartCount() }}
+    </span>
+      </a>
       <button class="nav-btn-ghost" (click)="logout()">Çıkış</button>
     </ng-container>
     <ng-template #authLinks>

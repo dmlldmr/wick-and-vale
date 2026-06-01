@@ -2,6 +2,7 @@ package com.damla.wick_n_vale.common.handler;
 
 import com.damla.wick_n_vale.common.dto.ApiError;
 import com.damla.wick_n_vale.common.exception.*;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -65,5 +66,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiError(500, "Internal Server Error"));
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ApiError> handlePropertyReference(PropertyReferenceException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ApiError(400, "In valid sort property: " + ex.getPropertyName()));
     }
 }

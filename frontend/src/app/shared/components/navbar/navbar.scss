@@ -63,3 +63,55 @@
 
   &:hover { opacity: 0.8; }
 }
+
+.nav-admin {
+  background-color: #1a1a1a;
+  color: white !important;
+  border-radius: 6px;
+  padding: 6px 14px !important;
+  margin-left: 8px;
+
+  &:hover {
+    background-color: #333;
+    color: white !important;
+  }
+}
+
+.nav-user {
+  color: #333;
+  text-decoration: none;
+  padding: 8px 12px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    color: #667eea;
+  }
+}
+
+.nav-cart {
+  position: relative;
+  font-size: 14px;
+  color: var(--color-shadow-tone);
+  transition: color 0.15s ease;
+  text-decoration: none;
+
+  &:hover { color: var(--color-ink); }
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: var(--color-ink);
+  color: var(--color-paper-white);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

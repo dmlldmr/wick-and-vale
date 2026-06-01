@@ -1,0 +1,96 @@
+<div class="products-page">
+
+  <aside class="filters">
+    <div class="filter-header">
+      <span class="filter-title">Filtreler</span>
+      <button *ngIf="hasActiveFilter" class="filter-clear" (click)="clearFilters()">Temizle</button>
+    </div>
+
+    <div class="filter-group">
+      <p class="filter-group-label">Koleksiyon</p>
+      <button
+        *ngFor="let col of collectionTypes"
+        class="filter-chip"
+        [class.active]="selectedCollection === col"
+        (click)="selectCollection(col)">
+        {{ collectionLabel(col) }}
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <p class="filter-group-label">Tema</p>
+      <button
+        *ngFor="let theme of themes"
+        class="filter-chip"
+        [class.active]="selectedTheme === theme"
+        (click)="selectTheme(theme)">
+        {{ themeLabel(theme) }}
+      </button>
+    </div>
+  </aside>
+
+  <main class="products-main">
+
+    <div class="search-bar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Ürün ara..."
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()">
+      <button class="search-btn" (click)="onSearch()">Ara</button>
+    </div>
+
+    <p *ngIf="!loading && !error" class="results-count">
+      {{ totalElements }} ürün
+      <span *ngIf="selectedCollection"> · {{ collectionLabel(selectedCollection) }}</span>
+      <span *ngIf="selectedTheme"> · {{ themeLabel(selectedTheme) }}</span>
+    </p>
+
+    <p *ngIf="loading" class="state-message">Yükleniyor...</p>
+    <p *ngIf="error" class="state-message state-error">Ürünler yüklenemedi.</p>
+    <p *ngIf="!loading && !error && products.length === 0" class="state-message">Ürün bulunamadı.</p>
+
+    <div *ngIf="!loading && !error && products.length > 0" class="products-grid">
+      <div
+        *ngFor="let product of products"
+        class="product-card"
+        [routerLink]="['/products', product.id]">
+        <div class="product-image">
+          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
+          <div *ngIf="!product.imageUrl" class="product-image-placeholder"></div>
+        </div>
+        <div class="product-info">
+            <span class="product-type">
+              {{ collectionLabel(product.collectionType) }} / {{ variantLabel(product.variantType) }}
+            </span>
+          <span class="product-name">{{ product.name }}</span>
+          <span class="product-price">{{ product.price | number:'1.0-0' }} ₺</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="totalPages > 1" class="pagination">
+      <button
+        class="page-btn"
+        [disabled]="page === 0"
+        (click)="goToPage(page - 1)">
+        ←
+      </button>
+      <button
+        *ngFor="let p of pages"
+        class="page-btn"
+        [class.active]="p === page"
+        (click)="goToPage(p)">
+        {{ p + 1 }}
+      </button>
+      <button
+        class="page-btn"
+        [disabled]="page === totalPages - 1"
+        (click)="goToPage(page + 1)">
+        →
+      </button>
+    </div>
+
+  </main>
+</div>

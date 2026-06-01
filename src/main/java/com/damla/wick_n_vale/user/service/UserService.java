@@ -1,11 +1,9 @@
 package com.damla.wick_n_vale.user.service;
 
-import com.damla.wick_n_vale.user.web.dto.AuthResponse;
-import com.damla.wick_n_vale.user.web.dto.LoginRequest;
-import com.damla.wick_n_vale.user.web.dto.RegisterRequest;
-import com.damla.wick_n_vale.user.web.dto.UserResponse;
-
-import java.util.List;
+import com.damla.wick_n_vale.user.entity.UserEntity;
+import com.damla.wick_n_vale.user.web.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -15,7 +13,11 @@ public interface UserService {
 
     UserResponse getById(Long id);
 
-    List<UserResponse> getAll();
+    Page<UserResponse> getAll(Pageable pageable);
 
     void delete(Long id);
+
+    UserResponse updateProfile(Long id, UpdateProfileRequest request);
+
+    void changePassword(Long id, ChangePasswordRequest request);
 }

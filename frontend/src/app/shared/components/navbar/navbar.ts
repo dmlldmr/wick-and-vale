@@ -1,20 +1,31 @@
-import {Component} from '@angular/core';
-import {Router, RouterModule} from '@angular/router';
-import {CommonModule} from '@angular/common';
-import {Auth} from '../../../core/services/auth';
+import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Auth } from '../../../core/services/auth';
+import {CartService} from '../../../core/services/cart';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss'
+  styleUrls: ['./navbar.scss']
 })
 export class Navbar {
-  constructor(public authService: Auth, private router: Router) {}
+  constructor(public authService: Auth,
+              private router: Router,
+              public cartService: CartService
+  ) {}
+
+  ngOnInit() {
+    if(this.authService.isLoggedIn()) {
+      this.cartService.getCart().subscribe();
+    }
+  }
 
   logout() {
     this.authService.logout();
+    this.cartService.cartCount.set(0);
     this.router.navigate(['/login']);
   }
 
@@ -22,4 +33,3 @@ export class Navbar {
     return this.authService.getCurrentUser();
   }
 }
-

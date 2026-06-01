@@ -70,4 +70,24 @@ export class ProductService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  getByCollection(collectionType: string, page = 0, size = 12): Observable<PageResponse<Product>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<PageResponse<Product>>(`${this.apiUrl}/collection/${collectionType}`, { params });
+  }
+
+  getByTheme(themeType: string, page = 0, size = 12): Observable<PageResponse<Product>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<PageResponse<Product>>(`${this.apiUrl}/theme/${themeType}`, { params });
+  }
+
+  getByThemeAndCollection(themeType: string, collectionType: string, page = 0, size = 12): Observable<PageResponse<Product>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<PageResponse<Product>>(`${this.apiUrl}/theme/${themeType}/collection/${collectionType}`, { params });
+  }
+
+  search(name: string, page = 0, size = 12): Observable<PageResponse<Product>> {
+    const params = new HttpParams().set('name', name).set('page', page).set('size', size);
+    return this.http.get<PageResponse<Product>>(`${this.apiUrl}/search`, { params });
+  }
 }

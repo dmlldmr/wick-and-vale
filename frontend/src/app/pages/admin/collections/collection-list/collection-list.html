@@ -10,10 +10,10 @@
   <table *ngIf="!loading && !error" class="products-table">
     <thead>
     <tr>
-      <th>Tür</th>
-      <th>Açıklama</th>
-      <th>Kapak Görseli</th>
-      <th></th>
+      <th>Görsel</th>           <!-- 🔥 1. sıraya Görsel -->
+      <th>Tür</th>              <!-- 2. sıra -->
+      <th>Açıklama</th>         <!-- 3. sıra -->
+      <th></th>                 <!-- 4. sıra (işlemler) -->
     </tr>
     </thead>
     <tbody>
@@ -21,19 +21,26 @@
       <td colspan="4" class="empty-row">Henüz koleksiyon yok.</td>
     </tr>
     <tr *ngFor="let col of collections">
-      <td>{{ getTypeLabel(col.collectionType) }}</td>
-      <td>{{ col.description || '—' }}</td>
-      <td>
+      <!-- 🔥 1. HÜCRE: Görsel (class eklendi) -->
+      <td class="product-image-cell">
         <img
           *ngIf="col.coverImage"
           [src]="col.coverImage"
           alt="kapak"
-          width="60"
-          height="60"
-          style="object-fit: cover; border-radius: 6px;"
-          />
-        <span *ngIf="!col.coverImage">-</span>
+          class="product-thumbnail"
+        />
+        <div *ngIf="!col.coverImage" class="no-image">
+          📷
+        </div>
       </td>
+
+      <!-- 2. HÜCRE: Tür -->
+      <td>{{ getTypeLabel(col.collectionType) }}</td>
+
+      <!-- 3. HÜCRE: Açıklama -->
+      <td>{{ col.description || '—' }}</td>
+
+      <!-- 4. HÜCRE: İşlemler -->
       <td class="actions">
         <button class="btn-edit" (click)="edit(col.id)">Düzenle</button>
         <button class="btn-delete" (click)="delete(col.id)">Sil</button>

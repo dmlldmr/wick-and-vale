@@ -30,11 +30,33 @@
   max-width: 500px;
 }
 
+.hero-cta {
+  display: inline-block;
+  margin-top: var(--spacing-40);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-paper-white);
+  background-color: var(--color-ink);
+  padding: var(--spacing-12) var(--spacing-24);
+  border-radius: var(--radius-buttons);
+  transition: opacity 0.15s ease;
+
+  &:hover { opacity: 0.8; }
+}
+
 .products-section {
+  padding: var(--spacing-64) var(--spacing-40);
+  border-bottom: 1px solid var(--color-stone-line);
+}
+
+.collections-section {
   padding: var(--spacing-64) var(--spacing-40);
 }
 
 .section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   margin-bottom: var(--spacing-40);
 }
 
@@ -43,6 +65,14 @@
   font-size: var(--text-heading);
   font-weight: var(--font-weight-medium);
   letter-spacing: var(--tracking-heading);
+}
+
+.section-link {
+  font-size: 13px;
+  color: var(--color-shadow-tone);
+  transition: color 0.15s ease;
+
+  &:hover { color: var(--color-ink); }
 }
 
 .products-grid {
@@ -57,7 +87,7 @@
 .product-card {
   cursor: pointer;
 
-  &:hover .product-image img,
+  &:hover .product-image img { opacity: 0.85; }
   &:hover .product-image-placeholder { opacity: 0.85; }
 }
 
@@ -110,6 +140,64 @@
   font-size: 15px;
   color: var(--color-shadow-tone);
   margin-top: var(--spacing-4);
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-24);
+
+  @media (max-width: 700px) { grid-template-columns: 1fr; }
+}
+
+.collection-card {
+  cursor: pointer;
+
+  &:hover .collection-image img { opacity: 0.85; }
+  &:hover .collection-image-placeholder { opacity: 0.85; }
+}
+
+.collection-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-bodyelements);
+  overflow: hidden;
+  background-color: var(--color-alabaster);
+  margin-bottom: var(--spacing-12);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+  }
+}
+
+.collection-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-pebble-gray);
+  transition: opacity 0.2s ease;
+}
+
+.collection-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: 0 var(--spacing-4);
+}
+
+.collection-name {
+  font-family: var(--font-pp-right-grotesk);
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-ink);
+}
+
+.collection-desc {
+  font-size: 13px;
+  color: var(--color-shadow-tone);
+  line-height: 1.5;
 }
 
 .state-message {

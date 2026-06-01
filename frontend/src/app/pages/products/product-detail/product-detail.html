@@ -1,0 +1,50 @@
+
+<div class="detail-page">
+
+  <a class="back-link" routerLink="/products">← Ürünlere Dön</a>
+
+  <p *ngIf="loading()" class="state-message">Yükleniyor...</p>
+  <p *ngIf="error()" class="state-message state-error">Ürün bulunamadı.</p>
+
+  <div *ngIf="!loading() && !error() && product()" class="detail-layout">
+
+    <div class="detail-image">
+      <img *ngIf="product()!.imageUrl" [src]="product()!.imageUrl" [alt]="product()!.name">
+      <div *ngIf="!product()!.imageUrl" class="detail-image-placeholder"></div>
+    </div>
+
+    <div class="detail-info">
+
+      <div class="detail-badges">
+        <span class="badge">{{ collectionLabel(product()!.collectionType) }}</span>
+        <span class="badge">{{ variantLabel(product()!.variantType) }}</span>
+        <span class="badge">{{ themeLabel(product()!.themeType) }}</span>
+      </div>
+
+      <h1 class="detail-name">{{ product()!.name }}</h1>
+
+      <p class="detail-price">{{ product()!.price | number:'1.0-0' }} ₺</p>
+
+      <p *ngIf="product()!.description" class="detail-description">{{ product()!.description }}</p>
+
+      <div class="detail-stock">
+        <span *ngIf="inStock" class="stock-in">● Stokta var</span>
+        <span *ngIf="!inStock" class="stock-out">● Stokta yok</span>
+      </div>
+
+      <div class="detail-quantity">
+        <button class="qty-btn" (click)="changeQuantity(-1)" [disabled]="quantity() <= 1">−</button>
+        <span class="qty-value">{{ quantity() }}</span>
+        <button class="qty-btn" (click)="changeQuantity(1)" [disabled]="quantity() >= product()!.stock">+</button>
+      </div>
+
+      <button class="btn-add-cart" [disabled]="!inStock || adding()" (click)="addToCart()">
+        <span *ngIf="adding()">Ekleniyor...</span>
+        <span *ngIf="added() && !adding()">✓ Sepete Eklendi</span>
+        <span *ngIf="!adding() && !added()">Sepete Ekle</span>
+      </button>
+
+    </div>
+  </div>
+
+</div>

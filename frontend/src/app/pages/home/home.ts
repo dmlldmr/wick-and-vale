@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { ProductService } from '../../core/services/product';
 import { Product } from '../../core/models/product.model';
 import { CollectionService } from '../../core/services/collection';
+import {Collection} from '../../core/models/collection.model';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -14,8 +16,24 @@ import { CollectionService } from '../../core/services/collection';
 })
 export class Home implements OnInit {
   products: Product[] = [];
+  collections: Collection[] = [];
   loading = true;
-  private collections: any[] = [];
+  error = false;
+
+  private readonly collectionLabels: Record<string, string> = {
+    BODUL: 'Bodul Mum',
+    SUTUN: 'Sütun Mum',
+    KUTU: 'Kutu Mum'
+  };
+
+  private readonly variantLabels: Record<string, string> = {
+    SADE: 'Sade',
+    DESENLI: 'Desenli',
+    INCE: 'İnce',
+    KALIN: 'Kalın',
+    KAGIT: 'Kağıt Kutulu',
+    TENEKE: 'Teneke Kutulu'
+  };
 
   constructor(
     private productService: ProductService,
@@ -23,43 +41,29 @@ export class Home implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadProducts();
-  }
-
-  private loadProducts(): void {
-    Promise.all([
-      this.collectionService.getAll().toPromise(),
-      this.productService.getAll(0, 12).toPromise()
-    ]).then(([collections, products]) => {
-      this.collections = collections || [];
-      this.products = products?.content || [];
-      this.loading = false;
-    }).catch(error => {
-      console.error('Ürünler yüklenirken hata:', error);
-      this.loading = false;
+    forkJoin({
+      products: this.productService.getAll(0, 6),
+      collections: this.collectionService.getAll()
+    }).subscribe({
+      next: ({ products, collections }) => {
+        this.products = products.content;
+        this.collections = collections;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      }
     });
   }
 
-  getCollectionAndVariantLabel(variantId: number): string {
-    for (const collection of this.collections) {
-      const variant = collection.variants?.find((v: any) => v.id === variantId);
-      if (variant) {
-        const collectionLabels: Record<string, string> = {
-          BODUL: 'Bodul',
-          SUTUN: 'Sütun',
-          KUTU: 'Kutu'
-        };
-        const variantLabels: Record<string, string> = {
-          SADE: 'Sade',
-          DESENLI: 'Desenli',
-          INCE: 'İnce',
-          KALIN: 'Kalın',
-          KAGIT: 'Kağıt',
-          TENEKE: 'Teneke'
-        };
-        return `${collectionLabels[collection.collectionType]} / ${variantLabels[variant.variantType]}`;
-      }
-    }
-    return 'Mum';
+  collectionLabel(type: string): string {
+    return this.collectionLabels[type] ?? type;
   }
+
+  variantLabel(type: string): string {
+    return this.variantLabels[type] ?? type;
+  }
+
+
 }
