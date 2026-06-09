@@ -1,0 +1,119 @@
+<div class="admin-page">
+<div class="page-header">
+  <h1 class="page-title">Temalar</h1>
+  <button
+    *ngIf="!showCreateForm && !editingId"
+    class="btn-primary"
+    (click)="showCreateForm = true">
+    + Yeni Tema
+  </button>
+</div>
+
+<!-- Yeni Tema Formu -->
+<div *ngIf="showCreateForm" class="create-form">
+  <h2 class="form-title">Yeni Tema Ekle</h2>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Tema Adı</label>
+      <input type="text" [(ngModel)]="createType" placeholder="Örn: Bahar, Noel, Modern..." />
+    </div>
+    <div class="form-group">
+      <label>Açıklama</label>
+      <input type="text" [(ngModel)]="createDesc" placeholder="Tema açıklaması..." />
+    </div>
+    <div class="form-group">
+      <label>Görsel</label>
+      <div class="edit-image-row">
+        <img *ngIf="createImagePreview()" [src]="createImagePreview()!" class="edit-thumb" alt="Önizleme" />
+        <label class="upload-label">
+          <span>{{ createImageName() || 'Görsel seç...' }}</span>
+          <input type="file" accept="image/*" (change)="onCreateImageSelected($event)" hidden />
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button class="btn-ghost" (click)="showCreateForm = false; createType = ''; createDesc = ''; createImageFile = null; createImageName.set(''); createImagePreview.set(null)">İptal</button>
+    <button class="btn-primary" [disabled]="!createType.trim() || creating" (click)="create()">
+      {{ creating ? 'Ekleniyor...' : 'Ekle' }}
+    </button>
+  </div>
+</div>
+
+<!-- Düzenleme Formu -->
+<div *ngIf="editingId !== null" id="edit-form" class="create-form">
+  <h2 class="form-title">Tema Düzenle</h2>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Tema Adı</label>
+      <input type="text" [(ngModel)]="editType" placeholder="Tema adı..." />
+    </div>
+    <div class="form-group">
+      <label>Açıklama</label>
+      <input type="text" [(ngModel)]="editDesc" placeholder="Tema açıklaması..." />
+    </div>
+    <div class="form-group">
+      <label>Görsel</label>
+      <div class="edit-image-row">
+        <img *ngIf="editImagePreview()" [src]="editImagePreview()!" class="edit-thumb" alt="Önizleme" />
+        <label class="upload-label">
+          <span>{{ editImageFile ? editImageFile.name : 'Değiştir...' }}</span>
+          <input type="file" accept="image/*" (change)="onEditImageSelected($event)" hidden />
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button class="btn-ghost" (click)="cancelEdit()">İptal</button>
+    <button class="btn-primary" [disabled]="!editType.trim() || saving" (click)="saveEdit(editingId!)">
+      {{ saving ? 'Kaydediliyor...' : 'Kaydet' }}
+    </button>
+  </div>
+</div>
+
+<p *ngIf="imageError()" class="state-message state-error">{{ imageError() }}</p>
+<p *ngIf="loading()" class="state-message">Yükleniyor...</p>
+<p *ngIf="error()" class="state-message state-error">{{ error() }}</p>
+
+<div *ngIf="!loading() && themes().length === 0" class="empty-state">
+  Henüz tema eklenmemiş.
+</div>
+
+<div *ngIf="!loading() && themes().length > 0" class="themes-list">
+  <div *ngFor="let theme of themes()" class="theme-row" [class.editing]="editingId === theme.id">
+
+    <div class="theme-image">
+      <img *ngIf="theme.coverImage" [src]="theme.coverImage" [alt]="theme.themeType" class="theme-thumb">
+      <div *ngIf="!theme.coverImage" class="theme-thumb-empty">✦</div>
+    </div>
+
+    <div class="theme-info">
+      <div class="theme-meta-row">
+        <span class="meta-label">Tema</span>
+        <span class="type-badge">{{ theme.themeType }}</span>
+      </div>
+      <div class="theme-meta-row">
+        <span class="meta-label">Açıklama</span>
+        <span class="theme-desc-text">{{ theme.description || '—' }}</span>
+      </div>
+    </div>
+
+    <div class="theme-actions">
+      <button class="btn-ghost-sm" (click)="startEdit(theme)">Düzenle</button>
+      <button class="btn-danger-sm" (click)="requestDelete(theme.id)">Sil</button>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<div *ngIf="confirmDeleteId !== null" class="modal-overlay" (click)="cancelDelete()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <p class="modal-text">Bu temayı silmek istediğinize emin misiniz?</p>
+    <div class="modal-actions">
+      <button class="btn-modal-confirm" (click)="delete(confirmDeleteId!)">Evet, Sil</button>
+      <button class="btn-modal-cancel" (click)="cancelDelete()">Vazgeç</button>
+    </div>
+  </div>
+</div>

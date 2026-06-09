@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
@@ -14,22 +14,21 @@ import {Auth} from '../../../core/services/auth';
 export class Login {
   email = '';
   password = '';
-  error = '';
+  error = signal('');
 
   constructor(private authService: Auth, private router: Router) {}
 
   onSubmit() {
+    this.error.set('');
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        if(this.authService.isAdmin()) {
+        if (this.authService.isAdmin()) {
           this.router.navigate(['/admin']);
         } else {
-          this.router.navigate(['/home'])
+          this.router.navigate(['/home']);
         }
       },
-      error: () => this.error = 'E-posta veya şifre hatalı.'
+      error: () => this.error.set('E-posta veya şifre hatalı.')
     });
   }
 }
-
-

@@ -7,7 +7,6 @@ import com.damla.wick_n_vale.product.service.ProductService;
 import com.damla.wick_n_vale.product.web.dto.CreateProductRequest;
 import com.damla.wick_n_vale.product.web.dto.ProductResponse;
 import com.damla.wick_n_vale.product.web.dto.UpdateProductRequest;
-import com.damla.wick_n_vale.theme.enumaration.ThemeType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,7 +71,7 @@ public class ProductController {
 
     @GetMapping("/theme/{themeType}")
     public ResponseEntity<Page<ProductResponse>> getByTheme(
-            @PathVariable ThemeType themeType, Pageable pageable) {
+            @PathVariable String themeType, Pageable pageable) {
         return ResponseEntity.ok(productService.getByTheme(themeType, pageable));
     }
 
@@ -84,7 +83,7 @@ public class ProductController {
 
     @GetMapping("/theme/{themeType}/collection/{collectionType}")
     public ResponseEntity<Page<ProductResponse>> getByThemeAndCollection(
-            @PathVariable ThemeType themeType,
+            @PathVariable String themeType,
             @PathVariable CollectionType collectionType,
             Pageable pageable) {
         return ResponseEntity.ok(productService.getByThemeAndCollection(themeType, collectionType, pageable));

@@ -51,10 +51,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/collections/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/themes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/dashboard").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.PUT, "/api/users/profile").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/users/change-password").authenticated()
 
+                        .requestMatchers(HttpMethod.POST, "/api/products/*/reviews").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")

@@ -1,5 +1,6 @@
 package com.damla.wick_n_vale.theme.web.controller;
 
+import com.damla.wick_n_vale.common.service.FileService;
 import com.damla.wick_n_vale.theme.service.ThemeService;
 import com.damla.wick_n_vale.theme.web.dto.CreateThemeRequest;
 import com.damla.wick_n_vale.theme.web.dto.ThemeResponse;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class ThemeController {
 
     private final ThemeService themeService;
+    private final FileService fileService;
 
     @PostMapping
     public ResponseEntity<ThemeResponse> create(@Valid @RequestBody CreateThemeRequest request) {
@@ -44,5 +47,15 @@ public class ThemeController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         themeService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/image")
+    public ResponseEntity<ThemeResponse> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        String imageUrl = fileService.saveFile(file, "themes");
+        UpdateThemeRequest request = new UpdateThemeRequest();
+        request.setCoverImage(imageUrl);
+        return ResponseEntity.ok(themeService.update(id, request));
     }
 }

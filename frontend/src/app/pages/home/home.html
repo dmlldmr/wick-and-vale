@@ -41,9 +41,8 @@
   <div class="collections-grid">
     <div *ngFor="let collection of collections"
          class="collection-card"
-         [routerLink]="['/products']"
-         [queryParams]="{ collection: collection.collectionType }">
-      <div class="collection-image">
+         [routerLink]="['/collections', collection.id]">
+    <div class="collection-image">
         <img *ngIf="collection.coverImage"
              [src]="collection.coverImage"
              [alt]="collectionLabel(collection.collectionType)">

@@ -1,0 +1,37 @@
+<div class="wishlist-page">
+  <div class="page-header">
+    <h1 class="page-title">Favorilerim</h1>
+  </div>
+
+  <p *ngIf="loading()" class="state-message">Yükleniyor...</p>
+
+  <ng-container *ngIf="!loading()">
+
+    <p *ngIf="items().length === 0" class="empty-state">
+      Henüz favorilere ürün eklemediniz.<br>
+      <a routerLink="/products">Ürünlere göz at →</a>
+    </p>
+
+    <div *ngIf="items().length > 0" class="wishlist-grid">
+      <div *ngFor="let item of items()" class="wishlist-card">
+        <a [routerLink]="['/products', item.productId]" class="card-image-link">
+          <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.productName" class="card-image">
+          <div *ngIf="!item.imageUrl" class="card-image card-image--empty"></div>
+          <span *ngIf="item.stock === 0" class="out-of-stock-badge">Tükendi</span>
+        </a>
+        <div class="card-body">
+          <span class="card-meta">{{ collectionLabel(item.collectionType) }} / {{ variantLabel(item.variantType) }}</span>
+          <a [routerLink]="['/products', item.productId]" class="card-name">{{ item.productName }}</a>
+          <span class="card-price">{{ item.price | number:'1.0-0' }} ₺</span>
+          <button
+            class="btn-remove"
+            [disabled]="removingIds().has(item.productId)"
+            (click)="remove(item.productId)">
+            {{ removingIds().has(item.productId) ? 'Çıkarılıyor...' : '♥ Favorilerden Çıkar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

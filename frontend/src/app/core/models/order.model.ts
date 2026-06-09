@@ -5,6 +5,7 @@ export interface OrderItem {
   quantity: number;
   price: number;
   subtotal: number;
+  imageUrl: string | null;
 }
 
 export interface Order {
@@ -35,4 +36,15 @@ export interface UpdateOrderStatusRequest {
   orderStatus: string;
   paymentStatus: string;
   cargoTrackNumber: string;
+}
+
+export interface OrderItemRequest {
+  productId: number;
+  quantity: number;
+}
+
+export interface CreateOrderRequest {
+  userId?: number;
+  address: string;
+  items: OrderItemRequest[];
 }

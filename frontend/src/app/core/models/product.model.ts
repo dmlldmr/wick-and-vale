@@ -33,6 +33,7 @@ export interface Product {
   collectionType: string;
   createdAt: string;
   updatedAt: string;
+  hasOrders: boolean;
 }
 
 export interface PageResponse<T> {

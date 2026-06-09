@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class UpdateThemeRequest {
 
+    private String themeType;
+
     private String description;
 
     private String coverImage;

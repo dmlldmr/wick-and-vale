@@ -9,6 +9,7 @@ import com.damla.wick_n_vale.cart.web.dto.AddToCartRequest;
 import com.damla.wick_n_vale.cart.web.dto.CartItemResponse;
 import com.damla.wick_n_vale.cart.web.dto.CartResponse;
 import com.damla.wick_n_vale.cart.web.dto.UpdateCartItemRequest;
+import com.damla.wick_n_vale.common.exception.ResourceNotFoundException;
 import com.damla.wick_n_vale.product.entity.ProductEntity;
 import com.damla.wick_n_vale.product.repository.ProductRepository;
 import com.damla.wick_n_vale.user.entity.UserEntity;
@@ -41,7 +42,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse addItem(Long userId, AddToCartRequest request) {
         CartEntity cart = getOrCreateCart(userId);
         ProductEntity product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if(product.getStock() < request.getQuantity()) {
             throw new IllegalStateException("Yeterli stok yok");
@@ -73,7 +74,7 @@ public class CartServiceImpl implements CartService {
         CartEntity cart = getOrCreateCart(userId);
 
         CartItemEntity item = cartItemRepository.findByCartAndProductId(cart, productId)
-                .orElseThrow(() -> new EntityNotFoundException("Sepette ürün bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Sepette ürün bulunamadı"));
 
         if(request.getQuantity() == 0) {
             cart.getItems().remove(item);
@@ -93,7 +94,7 @@ public class CartServiceImpl implements CartService {
     public void removeItem(Long userId, Long productId) {
         CartEntity cart = getOrCreateCart(userId);
         CartItemEntity item = cartItemRepository.findByCartAndProductId(cart, productId)
-                .orElseThrow(() -> new EntityNotFoundException("Sepette ürün bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Sepette ürün bulunamadı"));
         cart.getItems().remove(item);
         cartItemRepository.delete(item);
     }
@@ -108,7 +109,7 @@ public class CartServiceImpl implements CartService {
     private CartEntity getOrCreateCart(Long userId) {
         return cartRepository.findByUserId(userId).orElseGet(() -> {
             UserEntity user = userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
             CartEntity cart = new CartEntity();
             cart.setUser(user);
             return cartRepository.save(cart);

@@ -14,7 +14,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authorizedReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isRefreshEndpoint = req.url.includes('/auth/refresh') || req.url.includes('/auth/logout');
+      const isRefreshEndpoint = req.url.includes('/auth/refresh')
+        || req.url.includes('/auth/logout')
+        || req.url.includes('/users/login');
 
       if (error.status === 401 && !isRefreshEndpoint && authService.getRefreshToken()) {
         return authService.refreshAccessToken().pipe(

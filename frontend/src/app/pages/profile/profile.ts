@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import {Auth} from '../../core/services/auth';
+import {ToastrAction} from '../../core/state/actions/toastr.actions';
+import {Store} from '@ngxs/store';
 
 @Component({
   selector: 'app-profile',
@@ -14,15 +16,15 @@ import {Auth} from '../../core/services/auth';
 export class Profile implements OnInit {
   user: any = null;
   isEditing = false;
-
   editName = '';
   editEmail = '';
-
   loading = false;
-  success = '';
   error = '';
 
-  constructor(public authService: Auth) {}
+  constructor(
+    public authService: Auth,
+    private store: Store
+  ) {}
 
   ngOnInit(): void {
     this.loadUserData();
@@ -36,7 +38,6 @@ export class Profile implements OnInit {
 
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
-    this.success = '';
     this.error = '';
     if (this.isEditing) {
       this.editName = this.user?.name || '';
@@ -52,27 +53,26 @@ export class Profile implements OnInit {
 
     this.loading = true;
     this.error = '';
-    this.success = '';
 
     this.authService.updateProfile(this.editName.trim(), this.editEmail.trim()).subscribe({
-      next: (response) => {
-        this.success = 'Profil başarıyla güncellendi!';
-        this.isEditing = false;
+      next: () => {
         this.loading = false;
-
-        // 🔥 Sayfayı yenile (navbar'daki isim güncellenir)
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+        this.isEditing = false;
+        this.store.dispatch(new ToastrAction({
+          type: 'success',
+          message: 'Profil başarıyla güncellendi.',
+          delay: 2000
+        }));
+        setTimeout(() => window.location.reload(), 1500);
       },
-      error: (err) => {
-        this.error = err.error?.message || 'Bir hata oluştu.';
+      error: () => {
         this.loading = false;
       }
     });
   }
+
   getRoleLabel(role: string): string {
-    switch(role) {
+    switch (role) {
       case 'ADMIN': return 'Admin';
       case 'ROLE_ADMIN': return 'Admin';
       case 'USER': return 'Kullanıcı';

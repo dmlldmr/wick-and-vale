@@ -9,6 +9,8 @@
 
     <ng-container *ngIf="authService.isLoggedIn(); else authLinks">
       <a class="nav-user" routerLink="/profile">{{ currentUser?.name }}</a>
+      <a *ngIf="authService.isLoggedIn() && !authService.isAdmin()" class="nav-link" routerLink="/orders">Siparişlerim</a>
+      <a *ngIf="!authService.isAdmin()" class="nav-link" routerLink="/wishlist">Favorilerim</a>
       <a class="nav-cart" routerLink="/cart">
         Sepet
         <span class="cart-badge" *ngIf="cartService.cartCount() > 0">

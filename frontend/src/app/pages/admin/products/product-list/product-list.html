@@ -55,7 +55,13 @@
       </td>
       <td class="actions">
         <button class="btn-edit" (click)="editProduct(product.id)">Düzenle</button>
-        <button class="btn-delete" (click)="deleteProduct(product.id)">Sil</button>
+        <button
+          class="btn-delete"
+          [disabled]="product.hasOrders"
+          [title]="product.hasOrders ? 'Siparişlerde kullanılan ürün silinemez' : ''"
+          (click)="requestDelete(product.id)">
+          Sil
+        </button>
       </td>
     </tr>
     </tbody>
@@ -76,5 +82,14 @@
       (click)="changePage(currentPage + 1)">
       Sonraki →
     </button>
+  </div>
+  <div *ngIf="confirmDeleteId !== null" class="modal-overlay" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <p class="modal-text">Bu ürünü silmek istediğinize emin misiniz?</p>
+      <div class="modal-actions">
+        <button class="btn-modal-confirm" (click)="deleteProduct(confirmDeleteId!)">Evet, Sil</button>
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Vazgeç</button>
+      </div>
+    </div>
   </div>
 </main>

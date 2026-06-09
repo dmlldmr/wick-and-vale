@@ -20,4 +20,6 @@ public class OrderItemResponse {
     private BigDecimal price;
 
     private BigDecimal subtotal;
+
+    private String imageUrl;
 }

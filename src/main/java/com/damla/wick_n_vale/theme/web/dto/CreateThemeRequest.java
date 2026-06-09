@@ -1,7 +1,6 @@
 package com.damla.wick_n_vale.theme.web.dto;
 
-import com.damla.wick_n_vale.theme.enumaration.ThemeType;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +8,10 @@ import lombok.Setter;
 @Setter
 public class CreateThemeRequest {
 
-    @NotNull
-    private ThemeType themeType;
+    @NotBlank
+    private String themeType;
 
     private String description;
 
     private String coverImage;
-
 }

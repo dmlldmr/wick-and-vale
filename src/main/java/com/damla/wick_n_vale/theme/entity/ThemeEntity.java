@@ -1,7 +1,6 @@
 package com.damla.wick_n_vale.theme.entity;
 
 import com.damla.wick_n_vale.common.BaseEntity;
-import com.damla.wick_n_vale.theme.enumaration.ThemeType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,9 +13,8 @@ import lombok.*;
 @Builder
 public class ThemeEntity extends BaseEntity {
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private ThemeType themeType;
+    private String themeType;
 
     @Column(columnDefinition = "TEXT")
     private String description;

@@ -15,7 +15,7 @@ public interface OrderService {
 
     OrderResponse updateStatus(Long id, UpdateOrderStatusRequest request);
 
-    OrderResponse getById(Long id);
+    OrderResponse getById(Long id, Long requestId, boolean isAdmin);
 
     Page<OrderResponse> getAll(Pageable pageable);
 
@@ -23,5 +23,5 @@ public interface OrderService {
 
     Page<OrderResponse> getByStatus(OrderStatusType status, Pageable pageable);
 
-    void cancel(Long id);
+    void cancel(Long id, Long userId);
 }

@@ -1,0 +1,127 @@
+.orders-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--spacing-40);
+}
+
+.orders-header {
+  margin-bottom: var(--spacing-32);
+}
+
+.orders-title {
+  font-family: var(--font-pp-right-grotesk);
+  font-size: 28px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-ink);
+}
+
+.state-box {
+  text-align: center;
+  padding: var(--spacing-40) 0;
+  color: var(--color-shadow-tone);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-16);
+}
+
+.error-text {
+  color: #dc2626;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.order-card {
+  display: block;
+  text-decoration: none;
+  border: 1px solid var(--color-stone-line);
+  border-radius: var(--radius-card);
+  padding: var(--spacing-20) var(--spacing-24);
+  background: var(--color-paper-white);
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--color-ink);
+  }
+}
+
+.order-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-8);
+}
+
+.order-id {
+  font-size: 15px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-ink);
+}
+
+.order-date {
+  font-size: 13px;
+  color: var(--color-shadow-tone);
+}
+
+.order-card-middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-12);
+}
+
+.order-items-count {
+  font-size: 13px;
+  color: var(--color-shadow-tone);
+}
+
+.order-total {
+  font-size: 17px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-ink);
+}
+
+.order-card-bottom {
+  display: flex;
+  gap: var(--spacing-8);
+}
+
+.status-badge,
+.payment-badge {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-weight: var(--font-weight-medium);
+}
+
+.status-pending    { background: #fef9c3; color: #854d0e; }
+.status-processing { background: #dbeafe; color: #1e40af; }
+.status-shipped    { background: #e0e7ff; color: #3730a3; }
+.status-delivered  { background: #dcfce7; color: #166534; }
+.status-cancelled  { background: #fee2e2; color: #991b1b; }
+
+.payment-pending { background: #fef9c3; color: #854d0e; }
+.payment-paid    { background: #dcfce7; color: #166534; }
+.payment-failed  { background: #fee2e2; color: #991b1b; }
+
+.btn-primary {
+  display: block;
+  text-align: center;
+  background: var(--color-ink);
+  color: var(--color-paper-white);
+  padding: var(--spacing-12) var(--spacing-24);
+  border: none;
+  border-radius: var(--radius-buttons);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.8; }
+}
+

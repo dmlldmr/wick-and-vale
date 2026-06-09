@@ -1,0 +1,46 @@
+<div class="confirmation-page">
+  <div *ngIf="loading()" class="state-box">
+    <p>Yükleniyor...</p>
+  </div>
+
+  <div *ngIf="error()" class="state-box">
+    <p class="error-text">{{ error() }}</p>
+  </div>
+
+  <ng-container *ngIf="!loading() && !error() && order()">
+    <div class="confirmation-header">
+      <div class="check-icon">✓</div>
+      <h1 class="confirmation-title">Siparişiniz Alındı</h1>
+      <p class="confirmation-subtitle">Sipariş No: <strong>#{{ order()!.id }}</strong></p>
+    </div>
+
+    <div class="confirmation-body">
+      <div class="summary-card">
+        <h2 class="card-title">Sipariş Özeti</h2>
+
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order()!.items">
+            <span class="item-name">{{ item.productName }}</span>
+            <span class="item-qty">× {{ item.quantity }}</span>
+            <span class="item-price">{{ item.subtotal | number:'1.0-0' }} ₺</span>
+          </div>
+        </div>
+
+        <div class="order-total">
+          <span>Toplam</span>
+          <span class="total-price">{{ order()!.totalPrice | number:'1.0-0' }} ₺</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h2 class="card-title">Teslimat Adresi</h2>
+        <p class="info-text">{{ order()!.address }}</p>
+      </div>
+    </div>
+
+    <div class="confirmation-actions">
+      <a routerLink="/orders" class="btn-primary">Siparişlerimi Görüntüle</a>
+      <a routerLink="/products" class="btn-ghost">Alışverişe Devam Et</a>
+    </div>
+  </ng-container>
+</div>

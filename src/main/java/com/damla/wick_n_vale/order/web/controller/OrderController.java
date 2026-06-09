@@ -12,9 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -24,7 +24,10 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponse> create(@Valid @RequestBody CreateOrderRequest request) {
+    public ResponseEntity<OrderResponse> create(@Valid @RequestBody CreateOrderRequest request,
+                                                @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        request.setUserId(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.create(request));
     }
 
@@ -36,8 +39,12 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.getById(id));
+    public ResponseEntity<OrderResponse> getById(@PathVariable Long id,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
+        Long requestId = Long.parseLong(userDetails.getUsername());
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        return ResponseEntity.ok(orderService.getById(id, requestId, isAdmin));
     }
 
     @GetMapping
@@ -46,8 +53,10 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAll(pageable));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<OrderResponse>> getByUser(@PathVariable Long userId, Pageable pageable) {
+    @GetMapping("/my-orders")
+    public ResponseEntity<Page<OrderResponse>> getMyOrders(Pageable pageable,
+                                                           @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.ok(orderService.getByUserId(userId, pageable));
     }
 
@@ -58,8 +67,10 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable Long id) {
-        orderService.cancel(id);
+    public ResponseEntity<Void> cancel(@PathVariable Long id,
+                                       @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        orderService.cancel(id, userId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,0 +1,77 @@
+<div class="order-detail-page">
+  <div *ngIf="loading()" class="state-box">
+    <p>Yükleniyor...</p>
+  </div>
+
+  <div *ngIf="error()" class="state-box">
+    <p class="error-text">{{ error() }}</p>
+  </div>
+
+  <ng-container *ngIf="!loading() && !error() && order()">
+    <div class="page-header">
+      <a routerLink="/orders" class="back-link">← Siparişlerim</a>
+      <h1 class="page-title">Sipariş #{{ order()!.id }}</h1>
+      <span class="order-date">{{ order()!.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-card">
+        <h2 class="card-title">Durum</h2>
+        <div class="status-row">
+            <span class="status-badge" [class]="'status-' + order()!.orderStatus.toLowerCase()">
+              {{ statusLabels[order()!.orderStatus] || order()!.orderStatus }}
+            </span>
+          <span class="payment-badge" [class]="'payment-' + order()!.paymentStatus.toLowerCase()">
+              {{ paymentLabels[order()!.paymentStatus] || order()!.paymentStatus }}
+            </span>
+        </div>
+        <p *ngIf="order()!.cargoTrackNumber" class="cargo-track">
+          Kargo Takip No: <strong>{{ order()!.cargoTrackNumber }}</strong>
+        </p>
+        <div *ngIf="canCancel" class="cancel-section">
+          <ng-container *ngIf="!showCancelConfirm()">
+            <button class="btn-cancel" [disabled]="cancelling()" (click)="cancelRequest()">
+              {{ cancelling() ? 'İptal ediliyor...' : 'Siparişi İptal Et' }}
+            </button>
+          </ng-container>
+          <div *ngIf="showCancelConfirm()" class="cancel-confirm">
+            <p class="cancel-confirm-text">Siparişi iptal etmek istediğinize emin misiniz?</p>
+            <div class="cancel-confirm-actions">
+              <button class="btn-cancel-confirm" (click)="cancelConfirm()">Evet, İptal Et</button>
+              <button class="btn-cancel-dismiss" (click)="cancelDismiss()">Vazgeç</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="detail-card">
+        <h2 class="card-title">Ürünler</h2>
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order()!.items">
+            <img *ngIf="item.imageUrl" class="item-image" [src]="item.imageUrl" [alt]="item.productName" />
+            <div *ngIf="!item.imageUrl" class="item-image-placeholder"></div>
+            <div class="item-info">
+              <span class="item-name">{{ item.productName }}</span>
+              <span class="item-unit-price">{{ item.price | number:'1.0-0' }} ₺ / adet</span>
+            </div>
+            <div class="item-right">
+              <span class="item-qty">× {{ item.quantity }}</span>
+              <span class="item-price">{{ item.subtotal | number:'1.0-0' }} ₺</span>
+            </div>
+          </div>
+        </div>
+        <div class="order-total">
+          <span>Toplam</span>
+          <span class="total-price">{{ order()!.totalPrice | number:'1.0-0' }} ₺</span>
+        </div>
+      </div>
+
+
+      <div class="detail-card">
+        <h2 class="card-title">Teslimat Adresi</h2>
+        <p class="info-text">{{ order()!.address }}</p>
+      </div>
+    </div>
+  </ng-container>
+</div>

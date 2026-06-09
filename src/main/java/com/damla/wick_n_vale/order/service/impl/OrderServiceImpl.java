@@ -95,9 +95,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse getById(Long id) {
+    public OrderResponse getById(Long id, Long requestId, boolean isAdmin) {
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+
+        if (!isAdmin && (order.getUser() == null || !order.getUser().getId().equals(requestId))) {
+            throw new InvalidOperationException("You are not allowed to access this order");
+        }
         return toResponse(order);
     }
 
@@ -118,9 +122,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void cancel(Long id) {
+    public void cancel(Long id, Long userId) {
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+
+        if(order.getUser() == null || !order.getUser().getId().equals(userId)) {
+            throw new InvalidOperationException("Bu siparişi iptal etme yetkiniz yok.");
+        }
 
         if(order.getStatus() == OrderStatusType.SHIPPED || order.getStatus() == OrderStatusType.DELIVERED) {
             throw new InvalidOperationException("Order is already shipped/delivered. Order can't be cancelled");
@@ -133,6 +141,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setStatus(OrderStatusType.CANCELLED);
+        if (order.getPaymentStatus() == PaymentStatusType.PENDING) {
+            order.setPaymentStatus(PaymentStatusType.FAILED);
+        }
         orderRepository.save(order);
     }
 
@@ -145,6 +156,7 @@ public class OrderServiceImpl implements OrderService {
                         .id(item.getId())
                         .productId(item.getProduct().getId())
                         .productName(item.getProduct().getName())
+                        .imageUrl(item.getProduct().getImageUrl())
                         .quantity(item.getQuantity())
                         .price(item.getPrice())
                         .subtotal(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))

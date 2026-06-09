@@ -1,0 +1,68 @@
+<div class="checkout-page">
+
+  @if (loading()) {
+    <div class="state-loading">Yükleniyor...</div>
+  } @else {
+
+    <div class="checkout-layout">
+
+      <!-- Sol: Form -->
+      <div class="checkout-form-section">
+        <h1 class="section-title">Teslimat Bilgileri</h1>
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="address">Adres</label>
+            <textarea
+              id="address"
+              formControlName="address"
+              rows="4"
+              placeholder="Mahalle, cadde, sokak, bina no, daire no, ilçe, il"
+              [class.invalid]="form.get('address')!.invalid && form.get('address')!.touched"
+            ></textarea>
+            @if (form.get('address')!.invalid && form.get('address')!.touched) {
+              <span class="field-error">Lütfen geçerli bir adres girin (min. 10 karakter).</span>
+            }
+          </div>
+
+          @if (error()) {
+            <div class="error-banner">{{ error() }}</div>
+          }
+
+          <button
+            type="submit"
+            class="btn-place-order"
+            [disabled]="form.invalid || submitting()"
+          >
+            {{ submitting() ? 'Sipariş Oluşturuluyor...' : 'Siparişi Tamamla' }}
+          </button>
+        </form>
+      </div>
+
+      <!-- Sağ: Sipariş özeti -->
+      <div class="order-summary">
+        <h2 class="section-title">Sipariş Özeti</h2>
+
+        <div class="summary-items">
+          @for (item of cart()!.items; track item.productId) {
+            <div class="summary-item">
+              <img [src]="item.imageUrl" [alt]="item.name" class="item-image" />
+              <div class="item-info">
+                <span class="item-name">{{ item.name }}</span>
+                <span class="item-variant">{{ item.quantity }} adet</span>
+              </div>
+              <span class="item-subtotal">{{ item.subtotal | number:'1.2-2' }} ₺</span>
+            </div>
+          }
+        </div>
+
+        <div class="summary-total">
+          <span>Toplam</span>
+          <strong>{{ cart()!.totalPrice | number:'1.2-2' }} ₺</strong>
+        </div>
+      </div>
+
+    </div>
+
+  }
+</div>

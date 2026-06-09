@@ -25,18 +25,19 @@
         <div class="cart-item" *ngFor="let item of cart()!.items">
           <img *ngIf="item.imageUrl" class="item-image" [src]="item.imageUrl" [alt]="item.name" />
           <div *ngIf="!item.imageUrl" class="item-image-placeholder"></div>
-          <div class="item-info">
-            <h3 class="item-name">{{ item.name }}</h3>
-            <p class="item-meta">{{ item.collectionType }} · {{ item.variantType }}</p>
-            <p class="item-price">{{ item.price | number:'1.0-0' }} ₺</p>
-          </div>
-          <div class="item-controls">
-            <button class="qty-btn" (click)="updateQuantity(item, item.quantity - 1)">−</button>
-            <span class="qty-value">{{ item.quantity }}</span>
-            <button class="qty-btn" (click)="updateQuantity(item, item.quantity + 1)">+</button>
-          </div>
-          <div class="item-subtotal">
-            {{ item.subtotal | number:'1.0-0' }} ₺
+          <div class="item-details">
+            <div class="item-header">
+              <h3 class="item-name">{{ item.name }}</h3>
+              <p class="item-meta">{{ item.collectionType }} · {{ item.variantType }}</p>
+            </div>
+            <div class="item-bottom">
+              <div class="item-controls">
+                <button class="qty-btn" (click)="updateQuantity(item, item.quantity - 1)">−</button>
+                <span class="qty-value">{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item, item.quantity + 1)">+</button>
+              </div>
+              <span class="item-subtotal">{{ item.subtotal | number:'1.0-0' }} ₺</span>
+            </div>
           </div>
           <button class="remove-btn" (click)="removeItem(item)">✕</button>
         </div>
@@ -47,7 +48,10 @@
           <span>Toplam ({{ cart()!.totalItems }} ürün)</span>
           <span class="summary-total">{{ cart()!.totalPrice | number:'1.0-0' }} ₺</span>
         </div>
-        <button class="btn-primary checkout-btn">Siparişe Geç</button>
+        <div class="summary-actions">
+          <button class="btn-primary checkout-btn" routerLink="/checkout" [disabled]="!cart() || cart()!.items.length === 0">Siparişi Tamamla</button>
+          <a routerLink="/products" class="btn-ghost back-btn">Alışverişe Dön</a>
+        </div>
       </div>
     </div>
   </ng-container>

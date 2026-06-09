@@ -21,6 +21,8 @@ public class RefreshTokenService {
 
     @Transactional
     public String createRefreshToken(UserEntity user) {
+        refreshTokenRepository.revokeAllByUserId(user.getId());
+
         RefreshTokenEntity refreshToken = new RefreshTokenEntity();
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setUser(user);
@@ -55,5 +57,10 @@ public class RefreshTokenService {
         refreshTokenRepository.findByToken(token).ifPresent(t -> {
             refreshTokenRepository.delete(t);
         });
+    }
+
+    @Transactional
+    public void cleanupExpiredTokens() {
+        refreshTokenRepository.deleteExpiredAndRevoked(Instant.now());
     }
 }

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,26 +22,28 @@ public class FileService {
     @Value("${server.base-url:http://localhost:8080}")
     private String baseUrl;
 
-    /**
-     * Dosyayı kaydeder ve URL'ini döndürür
-     */
+    private static final List<String> ALLOWED_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".webp", ".avif");
+
     public String saveFile(MultipartFile file, String subDirectory) {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+
+        if(originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        }
+
+        if(!ALLOWED_EXTENSIONS.contains(extension)) {
+            throw new IllegalArgumentException("Unsupported extension: " + extension);
+        }
+
         try {
-            // Benzersiz dosya adı oluştur: timestamp_uuid_orijinalAd
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String uuid = UUID.randomUUID().toString().substring(0, 8);
-            String originalFileName = file.getOriginalFilename();
-            String extension = "";
-
-            if (originalFileName != null && originalFileName.contains(".")) {
-                extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            }
-
-            String fileName = timestamp + "_" + uuid + extension;
+            String fileName = timestamp + "_" + uuid  + extension;
 
             // Dizin yolunu oluştur: uploads/collections/ veya uploads/products/
             Path uploadPath = Paths.get(baseDir, subDirectory);

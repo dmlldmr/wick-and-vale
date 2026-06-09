@@ -203,7 +203,7 @@ export class ProductsForm implements OnInit {
       return;
     }
 
-    if (!this.stock || this.stock < 0) {
+    if (this.stock === null || this.stock === undefined || this.stock < 0) {
       this.error = 'Geçerli bir stok adedi giriniz.';
       return;
     }
@@ -262,22 +262,14 @@ export class ProductsForm implements OnInit {
   }
 
   private updateProduct(): void {
-    const request: UpdateProductRequest = {};
-
-    if (this.name !== this.getOriginalName()) request.name = this.name.trim();
-    if (this.description !== this.getOriginalDescription()) request.description = this.description.trim() || undefined;
-    if (this.price !== this.getOriginalPrice()) request.price = this.price!;
-    if (this.stock !== this.getOriginalStock()) request.stock = this.stock!;
-    if (this.themeId !== this.getOriginalThemeId()) request.themeId = this.themeId!;
-    if (this.variantId !== this.getOriginalVariantId()) request.variantId = this.variantId!;
-
-    if (Object.keys(request).length === 0 && !this.isImageChanged) {
-      this.success = 'Değişiklik yapılmadı.';
-      setTimeout(() => {
-        this.router.navigate(['/admin/products']);
-      }, 1500);
-      return;
-    }
+    const request: UpdateProductRequest = {
+      name: this.name.trim(),
+      description: this.description.trim() || undefined,
+      price: this.price!,
+      stock: this.stock!,
+      themeId: this.themeId!,
+      variantId: this.variantId!
+    };
 
     this.productService.update(
       this.productId!,
@@ -296,13 +288,6 @@ export class ProductsForm implements OnInit {
       }
     });
   }
-
-  private getOriginalName(): string { return this.name; }
-  private getOriginalDescription(): string { return this.description; }
-  private getOriginalPrice(): number | null { return this.price; }
-  private getOriginalStock(): number | null { return this.stock; }
-  private getOriginalThemeId(): number | null { return this.themeId; }
-  private getOriginalVariantId(): number | null { return this.variantId; }
 
   getThemeLabel(themeType: string): string {
     return this.themeLabels[themeType] || themeType;

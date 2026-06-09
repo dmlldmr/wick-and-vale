@@ -1,0 +1,119 @@
+.wishlist-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-64) var(--spacing-40);
+}
+
+.page-header {
+  margin-bottom: var(--spacing-40);
+}
+
+.page-title {
+  font-family: var(--font-pp-right-grotesk);
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-ink);
+}
+
+.empty-state {
+  font-size: 16px;
+  color: var(--color-shadow-tone);
+  line-height: 2;
+
+  a {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+}
+
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-24);
+}
+
+.wishlist-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-stone-line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.card-image-link {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  &--empty {
+    background: var(--color-alabaster);
+  }
+}
+
+.out-of-stock-badge {
+  position: absolute;
+  top: var(--spacing-8);
+  left: var(--spacing-8);
+  background: var(--color-ink);
+  color: var(--color-paper-white);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  padding: 2px var(--spacing-8);
+  border-radius: 99px;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-16);
+}
+
+.card-meta {
+  font-size: 11px;
+  color: var(--color-shadow-tone);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.card-name {
+  font-size: 15px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-ink);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.card-price {
+  font-size: 15px;
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-8);
+}
+
+.btn-remove {
+  font-family: var(--font-shne);
+  font-size: 13px;
+  color: #e05252;
+  background: none;
+  border: 1px solid #f5c6c6;
+  border-radius: var(--radius-buttons);
+  padding: var(--spacing-8) var(--spacing-12);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:hover:not(:disabled) { border-color: #e05252; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.state-message {
+  font-size: 15px;
+  color: var(--color-shadow-tone);
+}

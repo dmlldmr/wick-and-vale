@@ -19,4 +19,26 @@ export class ThemeService {
   getAll(): Observable<Theme[]> {
     return this.http.get<Theme[]>(this.apiUrl);
   }
+
+  getById(id: number): Observable<Theme> {
+    return this.http.get<Theme>(`${this.apiUrl}/${id}`);
+  }
+
+  create(body: { themeType: string; description: string }): Observable<Theme> {
+    return this.http.post<Theme>(this.apiUrl, body);
+  }
+
+  update(id: number, body: { themeType?: string; description?: string; coverImage?: string }): Observable<Theme> {
+    return this.http.put<Theme>(`${this.apiUrl}/${id}`, body);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  uploadImage(id: number, file: File): Observable<Theme> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.patch<Theme>(`${this.apiUrl}/${id}/image`, formData);
+  }
 }

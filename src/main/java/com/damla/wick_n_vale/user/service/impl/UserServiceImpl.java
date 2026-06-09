@@ -2,6 +2,7 @@ package com.damla.wick_n_vale.user.service.impl;
 
 import com.damla.wick_n_vale.common.exception.EmailAlreadyExistException;
 import com.damla.wick_n_vale.common.exception.InvalidCredentialException;
+import com.damla.wick_n_vale.common.exception.InvalidOperationException;
 import com.damla.wick_n_vale.common.exception.ResourceNotFoundException;
 import com.damla.wick_n_vale.order.repository.OrderRepository;
 import com.damla.wick_n_vale.security.JwtService;
@@ -54,10 +55,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public AuthResponse login(LoginRequest request) {
         UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + request.getEmail()));
+                .orElseThrow(() -> new InvalidOperationException("E-posta veya şifre hatalı."));
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialException("Incorrect password");
+            throw new InvalidCredentialException("E-posta veya şifre hatalı.");
         }
 
         AuthResponse response = new AuthResponse();
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
 
         if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new InvalidCredentialException("Incorrect password");
+            throw new InvalidOperationException("Mevcut şifre hatalı.");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));

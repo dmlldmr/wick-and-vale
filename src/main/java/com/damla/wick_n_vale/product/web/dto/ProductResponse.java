@@ -2,7 +2,6 @@ package com.damla.wick_n_vale.product.web.dto;
 
 import com.damla.wick_n_vale.product.enumaration.CollectionType;
 import com.damla.wick_n_vale.product.enumaration.VariantType;
-import com.damla.wick_n_vale.theme.enumaration.ThemeType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,7 +26,7 @@ public class ProductResponse {
 
     private Long themeId;
 
-    private ThemeType themeType;
+    private String themeType;
 
     private Long variantId;
 
@@ -38,4 +37,6 @@ public class ProductResponse {
     private CollectionType collectionType;
 
     private LocalDateTime createdAt;
+
+    private boolean hasOrders;
 }

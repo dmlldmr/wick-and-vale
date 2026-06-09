@@ -41,6 +41,12 @@ public class ThemeServiceImpl implements ThemeService {
         ThemeEntity themeEntity = themeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no theme with this id: " + id));
 
+        if(request.getThemeType() != null && !request.getThemeType().equals(themeEntity.getThemeType())) {
+            if(themeRepository.existsByThemeType(request.getThemeType())) {
+                throw new InvalidOperationException("There is already a theme with this type: " + request.getThemeType());
+            }
+            themeEntity.setThemeType(request.getThemeType());
+        }
         if(request.getDescription() != null) themeEntity.setDescription(request.getDescription());
         if(request.getCoverImage() != null) themeEntity.setCoverImage(request.getCoverImage());
         return toResponse(themeRepository.save(themeEntity));

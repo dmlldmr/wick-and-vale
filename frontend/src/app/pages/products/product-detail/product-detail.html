@@ -40,11 +40,106 @@
 
       <button class="btn-add-cart" [disabled]="!inStock || adding()" (click)="addToCart()">
         <span *ngIf="adding()">Ekleniyor...</span>
-        <span *ngIf="added() && !adding()">✓ Sepete Eklendi</span>
-        <span *ngIf="!adding() && !added()">Sepete Ekle</span>
+        <span *ngIf="!adding()">Sepete Ekle</span>
+      </button>
+      <button
+        class="btn-wishlist"
+        [class.wishlisted]="isWishlisted"
+        (click)="toggleWishlist()"
+        [disabled]="wishlistLoading()">
+        {{ isWishlisted ? '♥ Favorilerden Çıkar' : '♡ Favorilere Ekle' }}
       </button>
 
     </div>
   </div>
+
+  <div *ngIf="relatedProducts().length > 0" class="related-section">
+    <h2 class="related-title">Aynı Koleksiyondan</h2>
+    <div class="related-grid">
+      <div
+        *ngFor="let p of relatedProducts()"
+        class="related-card"
+        [class.out-of-stock]="p.stock === 0"
+        [routerLink]="['/products', p.id]">
+        <div class="related-image">
+          <img *ngIf="p.imageUrl" [src]="p.imageUrl" [alt]="p.name">
+          <div *ngIf="!p.imageUrl" class="related-image-placeholder"></div>
+          <span *ngIf="p.stock === 0" class="stock-badge">Tükendi</span>
+        </div>
+        <div class="related-info">
+          <span class="related-variant">{{ variantLabel(p.variantType) }}</span>
+          <span class="related-name">{{ p.name }}</span>
+          <span class="related-price">{{ p.price | number:'1.0-0' }} ₺</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reviews-section">
+    <div class="reviews-header">
+      <h2 class="reviews-title">Yorumlar
+        <span *ngIf="reviews().length > 0" class="reviews-count">({{ reviews().length }})</span>
+      </h2>
+      <div *ngIf="reviews().length > 0" class="average-rating">
+        <span class="star-filled" *ngFor="let filled of stars(averageRating())">★</span>
+        <span class="avg-number">{{ averageRating() | number:'1.1-1' }}</span>
+      </div>
+    </div>
+
+    <!-- Yorum formu -->
+    <div *ngIf="isLoggedIn && !alreadyReviewed" class="review-form">
+      <div class="star-input">
+          <span
+            *ngFor="let i of [1,2,3,4,5]"
+            class="star-btn"
+            [class.active]="i <= (hoverRating || newRating)"
+            (mouseenter)="hoverRating = i"
+            (mouseleave)="hoverRating = 0"
+            (click)="newRating = i">★</span>
+      </div>
+      <textarea
+        class="review-textarea"
+        [(ngModel)]="newComment"
+        placeholder="Ürün hakkında düşüncelerinizi yazın..."
+        rows="3">
+        </textarea>
+      <button
+        class="btn-submit-review"
+        [disabled]="newRating === 0 || !newComment.trim() || submitting()"
+        (click)="submitReview()">
+        {{ submitting() ? 'Gönderiliyor...' : 'Yorum Yap' }}
+      </button>
+    </div>
+
+    <div *ngIf="isLoggedIn && alreadyReviewed" class="already-reviewed">
+      Bu ürün için zaten yorum yazdınız.
+    </div>
+
+    <div *ngIf="!isLoggedIn" class="login-prompt">
+      Yorum yazmak için <a routerLink="/login">giriş yapın</a>.
+    </div>
+
+    <!-- Yorum listesi -->
+    <div *ngIf="reviews().length === 0" class="no-reviews">Henüz yorum yok.</div>
+
+    <div class="review-list">
+      <div *ngFor="let review of reviews()" class="review-card">
+        <div class="review-top">
+          <div class="review-meta">
+            <span class="reviewer-name">{{ review.userName }}</span>
+            <span class="review-stars">
+                <span *ngFor="let filled of stars(review.rating)" [class]="filled ? 'star-filled' : 'star-empty'">★</span>
+              </span>
+          </div>
+          <div class="review-actions">
+            <span class="review-date">{{ review.createdAt | date:'dd.MM.yyyy' }}</span>
+            <button *ngIf="canDelete(review)" class="btn-delete-review" (click)="deleteReview(review.id)">Sil</button>
+          </div>
+        </div>
+        <p class="review-comment">{{ review.comment }}</p>
+      </div>
+    </div>
+  </div>
+
 
 </div>

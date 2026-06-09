@@ -23,6 +23,7 @@ export class ProductList implements OnInit {
   pageSize = 10;
   totalPages = 0;
   totalElements = 0;
+  confirmDeleteId: number | null = null;
 
   constructor(
     private productService: ProductService,
@@ -83,7 +84,6 @@ export class ProductList implements OnInit {
     this.router.navigate(['/admin/products/edit', id]);
   }
 
-  // 🔥 Yeni metodlar - Doğrudan product'tan gelen değerleri label'a çevir
   getCollectionLabel(collectionType: string): string {
     const labels: Record<string, string> = {
       BODUL: 'Bodul Mum',
@@ -114,17 +114,19 @@ export class ProductList implements OnInit {
     return labels[themeType] || themeType;
   }
 
+  requestDelete(id: number): void {
+    this.confirmDeleteId = id;
+  }
+
+  cancelDelete(): void {
+    this.confirmDeleteId = null;
+  }
+
   deleteProduct(id: number): void {
-    if (confirm('Bu ürünü silmek istediğinizden emin misiniz?')) {
-      this.productService.delete(id).subscribe({
-        next: () => {
-          this.loadProducts();
-        },
-        error: (err) => {
-          console.error('Ürün silinemedi:', err);
-          alert('Ürün silinirken bir hata oluştu.');
-        }
-      });
-    }
+    this.confirmDeleteId = null;
+    this.productService.delete(id).subscribe({
+      next: () => this.loadProducts(),
+      error: () => { this.error = 'Ürün silinirken bir hata oluştu.'; }
+    });
   }
 }

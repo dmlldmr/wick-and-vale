@@ -1,0 +1,39 @@
+<div class="orders-page">
+  <div class="orders-header">
+    <h1 class="orders-title">Siparişlerim</h1>
+  </div>
+
+  <div *ngIf="loading()" class="state-box">
+    <p>Yükleniyor...</p>
+  </div>
+
+  <div *ngIf="error()" class="state-box">
+    <p class="error-text">{{ error() }}</p>
+  </div>
+
+  <div *ngIf="!loading() && !error() && orders().length === 0" class="state-box">
+    <p>Henüz siparişiniz bulunmuyor.</p>
+    <a routerLink="/products" class="btn-primary">Alışverişe Başla</a>
+  </div>
+
+  <div *ngIf="!loading() && !error() && orders().length > 0" class="orders-list">
+    <a class="order-card" *ngFor="let order of orders()" [routerLink]="['/orders', order.id]">
+      <div class="order-card-top">
+        <span class="order-id">#{{ order.id }}</span>
+        <span class="order-date">{{ order.createdAt | date:'dd.MM.yyyy' }}</span>
+      </div>
+      <div class="order-card-middle">
+        <span class="order-items-count">{{ order.items.length }} ürün</span>
+        <span class="order-total">{{ order.totalPrice | number:'1.0-0' }} ₺</span>
+      </div>
+      <div class="order-card-bottom">
+          <span class="status-badge" [class]="'status-' + order.orderStatus.toLowerCase()">
+            {{ statusLabels[order.orderStatus] || order.orderStatus }}
+          </span>
+        <span class="payment-badge" [class]="'payment-' + order.paymentStatus.toLowerCase()">
+            {{ paymentLabels[order.paymentStatus] || order.paymentStatus }}
+          </span>
+      </div>
+    </a>
+  </div>
+</div>

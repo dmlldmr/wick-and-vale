@@ -3,6 +3,7 @@ package com.damla.wick_n_vale.product.service.impl;
 import com.damla.wick_n_vale.collection.entity.CollectionVariantEntity;
 import com.damla.wick_n_vale.collection.repository.CollectionVariantRepository;
 import com.damla.wick_n_vale.common.exception.ResourceNotFoundException;
+import com.damla.wick_n_vale.order.repository.OrderItemStatusRepository;
 import com.damla.wick_n_vale.product.entity.ProductEntity;
 import com.damla.wick_n_vale.product.enumaration.CollectionType;
 import com.damla.wick_n_vale.product.enumaration.VariantType;
@@ -12,7 +13,6 @@ import com.damla.wick_n_vale.product.web.dto.CreateProductRequest;
 import com.damla.wick_n_vale.product.web.dto.ProductResponse;
 import com.damla.wick_n_vale.product.web.dto.UpdateProductRequest;
 import com.damla.wick_n_vale.theme.entity.ThemeEntity;
-import com.damla.wick_n_vale.theme.enumaration.ThemeType;
 import com.damla.wick_n_vale.theme.repository.ThemeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ThemeRepository themeRepository;
     private final CollectionVariantRepository collectionVariantRepository;
+    private final OrderItemStatusRepository orderItemStatusRepository;
 
     @Override
     @Transactional
@@ -91,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductResponse> getByTheme(ThemeType themeType, Pageable pageable) {
+    public Page<ProductResponse> getByTheme(String themeType, Pageable pageable) {
         return productRepository.findByTheme_ThemeType(themeType, pageable).map(this::toResponse);
     }
 
@@ -103,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductResponse> getByThemeAndCollection(ThemeType themeType, CollectionType collectionType, Pageable pageable) {
+    public Page<ProductResponse> getByThemeAndCollection(String themeType, CollectionType collectionType, Pageable pageable) {
         return productRepository.findByTheme_ThemeTypeAndVariant_Collection_CollectionType(themeType, collectionType, pageable).map(this::toResponse);
     }
 
@@ -143,6 +144,7 @@ public class ProductServiceImpl implements ProductService {
                 .collectionId(product.getVariant() != null ? product.getVariant().getCollection().getId() : null)
                 .collectionType(product.getVariant() != null ? product.getVariant().getCollection().getCollectionType() : null)
                 .createdAt(product.getCreatedAt())
+                .hasOrders(orderItemStatusRepository.existsByProductId(product.getId()))
                 .build();
     }
 }

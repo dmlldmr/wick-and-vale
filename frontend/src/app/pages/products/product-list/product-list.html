@@ -55,10 +55,12 @@
       <div
         *ngFor="let product of products"
         class="product-card"
+        [class.out-of-stock]="product.stock === 0"
         [routerLink]="['/products', product.id]">
         <div class="product-image">
           <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
           <div *ngIf="!product.imageUrl" class="product-image-placeholder"></div>
+          <span *ngIf="product.stock === 0" class="stock-badge">Tükendi</span>
         </div>
         <div class="product-info">
             <span class="product-type">

@@ -1,0 +1,64 @@
+<div class="collection-detail-page">
+
+  <ng-container *ngIf="collection() as col">
+
+    <div class="collection-hero">
+      <div class="collection-hero-image">
+        <img *ngIf="col.coverImage" [src]="col.coverImage" [alt]="collectionLabel(col.collectionType)">
+        <div *ngIf="!col.coverImage" class="hero-image-placeholder"></div>
+      </div>
+      <div class="collection-hero-info">
+        <p class="collection-eyebrow">Koleksiyon</p>
+        <h1 class="collection-title">{{ collectionLabel(col.collectionType) }}</h1>
+        <p *ngIf="col.description" class="collection-description">{{ col.description }}</p>
+        <div class="variant-list">
+            <span *ngFor="let v of col.variants" class="variant-chip">
+              {{ variantLabel(v.variantType) }}
+            </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="products-section">
+      <p class="results-count" *ngIf="!loading() && !error()">{{ totalElements }} ürün</p>
+      <p *ngIf="loading()" class="state-message">Yükleniyor...</p>
+      <p *ngIf="error()" class="state-message state-error">Ürünler yüklenemedi.</p>
+      <p *ngIf="!loading() && !error() && products().length === 0" class="state-message">Bu koleksiyonda ürün bulunamadı.</p>
+
+      <div *ngIf="!loading() && !error() && products().length > 0" class="products-grid">
+        <div
+          *ngFor="let product of products()"
+          class="product-card"
+          [class.out-of-stock]="product.stock === 0"
+          [routerLink]="['/products', product.id]">
+          <div class="product-image">
+            <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name">
+            <div *ngIf="!product.imageUrl" class="product-image-placeholder"></div>
+            <span *ngIf="product.stock === 0" class="stock-badge">Tükendi</span>
+          </div>
+          <div class="product-info">
+            <span class="product-type">{{ variantLabel(product.variantType) }}</span>
+            <span class="product-name">{{ product.name }}</span>
+            <span class="product-price">{{ product.price | number:'1.0-0' }} ₺</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="totalPages > 1" class="pagination">
+        <button class="page-btn" [disabled]="page === 0" (click)="goToPage(page - 1)">←</button>
+        <button
+          *ngFor="let p of pages"
+          class="page-btn"
+          [class.active]="p === page"
+          (click)="goToPage(p)">
+          {{ p + 1 }}
+        </button>
+        <button class="page-btn" [disabled]="page === totalPages - 1" (click)="goToPage(page + 1)">→</button>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <p *ngIf="error() && !collection()" class="state-message state-error">Koleksiyon bulunamadı.</p>
+
+</div>

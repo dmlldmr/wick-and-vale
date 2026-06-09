@@ -165,7 +165,8 @@
   cursor: pointer;
   transition: border-color 0.15s ease;
 
-  &:hover { border-color: #c0392b; }
+  &:hover:not(:disabled) { border-color: #c0392b; }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
 }
 
 .pagination {
@@ -237,3 +238,70 @@
     gap: var(--spacing-8);
   }
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-paper-white);
+  border: 1px solid var(--color-stone-line);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-40);
+  min-width: 360px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-28);
+}
+
+.modal-text {
+  font-family: var(--font-shne);
+  font-size: 15px;
+  color: var(--color-ink);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  gap: var(--spacing-8);
+  justify-content: center;
+}
+
+.btn-modal-confirm {
+  font-family: var(--font-shne);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-8) var(--spacing-16);
+  background: var(--color-ink);
+  color: var(--color-paper-white);
+  border-radius: var(--radius-buttons);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+
+  &:hover { opacity: 0.75; }
+}
+
+.btn-modal-cancel {
+  font-family: var(--font-shne);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-8) var(--spacing-16);
+  background: none;
+  border: 1px solid var(--color-stone-line);
+  border-radius: var(--radius-buttons);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:hover { border-color: var(--color-ink); }
+}
+
